@@ -1,0 +1,6 @@
+Tree (tree.glb) by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/6pwiq7hSrHr)
+Small Trees (small-trees.glb) by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/fSY0MW1tzEl)
+Road Kit (road-kit.glb) by Kenney (https://poly.pizza/m/YClppstaHV)
+Car (car.glb) by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/75h3mi6uHuC)
+Character Soldier (character-soldier.glb) by Quaternius (https://poly.pizza/m/PpLF4rt4ah)
+Toon Shooter Game Kit by Quaternius via Poly Pizza (https://poly.pizza/bundle/Toon-Shooter-Game-Kit-qraiSXoAru)

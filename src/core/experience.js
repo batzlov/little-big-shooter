@@ -49,14 +49,11 @@ export default class Experience {
         this.time.on("tick", () => {
             this.update();
         });
-
-        this.keyEventHandler.on("move-player", () => {});
     }
 
     destroyEvents() {
         this.sizes.off("resize");
         this.time.off("tick");
-        this.keyEventHandler.off("move-player");
     }
 
     resize() {
@@ -68,10 +65,6 @@ export default class Experience {
         this.camera.update();
         this.world.update();
         this.renderer.update();
-
-        if (this.world.player && this.keyEventHandler.keysPressed.length > 0) {
-            this.world.player.updatePosition(this.keyEventHandler.keysPressed);
-        }
     }
 
     destroy() {

@@ -2,6 +2,7 @@ export default class InputHandler {
     constructor() {
         this.keysPressed = {};
         this.mouseKeysPressed = {};
+        this.cursorPosition = { x: 0, y: 0 };
 
         window.addEventListener("keydown", (event) => {
             this.keysPressed[event.key.toLowerCase()] = true;
@@ -19,8 +20,14 @@ export default class InputHandler {
 
         window.addEventListener("mouseup", (event) => {
             // TODO: add event handling for mouse events
-            this.mouseKeysPressed.left = false;
-            this.mouseKeysPressed.right = false;
+            delete this.mouseKeysPressed.left;
+            delete this.mouseKeysPressed.right;
+        });
+
+        window.addEventListener("mousemove", (event) => {
+            // values range from -0.5 to 0.5
+            // this.cursor.x = event.clientX / sizes.width - 0.5;
+            // this.cursor.y = -(event.clientY / sizes.height - 0.5);
         });
     }
 }

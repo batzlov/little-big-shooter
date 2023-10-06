@@ -24,4 +24,14 @@ export default [
         type: "gltf",
         path: "models/character-soldier.glb",
     },
+    {
+        name: "shippingContainerModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/shipping-container.glb",
+    },
+    {
+        name: "shippingContainerStructureModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/shipping-container-structure.glb",
+    },
 ];

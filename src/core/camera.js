@@ -16,18 +16,28 @@ export default class Camera {
 
     initInstance() {
         this.instance = new THREE.PerspectiveCamera(
-            45,
+            75,
             this.sizes.width / this.sizes.height,
             0.1,
             1000
         );
-        this.instance.position.set(0, 10, 10);
+        // third person camera
+        // this.instance.position.set(0, 8, 10);
+
+        // first person camera
+        this.instance.position.set(0, 1.7, -0.15);
+
         this.scene.add(this.instance);
     }
 
     initControls() {
         this.controls = new OrbitControls(this.instance, this.canvas);
         this.controls.enableDamping = true;
+        this.controls.target.y += 1;
+        this.controls.target.z -= 2;
+
+        // orbit control can be used for debugging
+        this.controls.enabled = false;
     }
 
     resize() {

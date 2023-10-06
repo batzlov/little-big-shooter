@@ -7,8 +7,8 @@ import colors from "../constants/colors.js";
 import Environment from "./environment.js";
 import Ground from "./ground.js";
 import Tree from "./tree.js";
-import Road from "./road.js";
-import Car from "./car.js";
+import ShippingContainer from "./shipping-container.js";
+import ShippingContainerStructure from "./shipping-container-structure.js";
 import Player from "./player.js";
 
 export default class World {
@@ -27,12 +27,15 @@ export default class World {
     initWorld() {
         this.ground = new Ground();
         this.environment = new Environment();
-        // this.car = new Car();
+
+        this.obstacles = [];
+        this.obstacles.push(
+            new ShippingContainerStructure({ x: 10, y: 0, z: -20 }),
+            new ShippingContainerStructure({ x: -10, y: 0, z: -20 }),
+            new ShippingContainer({ x: 16, y: 0, z: -20 })
+        );
 
         this.initSkybox();
-        // this.initStreet();
-
-        // this.tree = new Tree();
     }
 
     initSkybox() {
@@ -49,18 +52,6 @@ export default class World {
             tree.model.position.z = THREE.MathUtils.randFloat(-5, 5);
 
             this.scene.add(tree.model);
-        }
-    }
-
-    initStreet() {
-        const numberOfStreetSegments = 10;
-        for (let i = 0; i < numberOfStreetSegments; i++) {
-            const road = new Road();
-
-            // FIXME: seems wrong, but works for now
-            road.model.position.x = -1 * (i + 1);
-
-            this.scene.add(road.model);
         }
     }
 

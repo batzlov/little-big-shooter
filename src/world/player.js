@@ -11,7 +11,10 @@ export default class Player {
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
+
+        // input handling
         this.keysPressed = this.experience.inputHandler.keysPressed;
+        this.mouseKeysPressed = this.experience.inputHandler.mouseKeysPressed;
 
         // TODO: implement player movement
         this.walkDirection = new THREE.Vector3(0, 0, 0);
@@ -79,14 +82,34 @@ export default class Player {
             "RocketLauncher_4",
         ];
 
+        const hideBodyParts = [
+            "Head_2",
+            "Head_3",
+            "Head_4",
+            "ShoulderPadL",
+            "ShoulderPadR",
+            "Body_2",
+            // "Body_3",
+        ];
+
         this.model = this.resource.scene;
         this.model.position.y = 0.01;
         this.model.rotation.y = Math.PI;
         this.scene.add(this.model);
 
+        // hide node used weapons
         this.model.traverse((child) => {
             if (child instanceof THREE.Mesh) {
                 if (hideWeapons.includes(child.name)) {
+                    child.visible = false;
+                }
+            }
+        });
+
+        // hide character parts that disturbs the camera view
+        this.model.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+                if (hideBodyParts.includes(child.name)) {
                     child.visible = false;
                 }
             }
@@ -151,7 +174,7 @@ export default class Player {
 
             newAction.reset();
             newAction.play();
-            newAction.crossFadeFrom(oldAction, 1);
+            newAction.crossFadeFrom(oldAction, 0.5);
 
             this.animation.actions.current = newAction;
         };
@@ -165,12 +188,19 @@ export default class Player {
 
         // set the right animation
         if (
+            this.mouseKeysPressed.left &&
+            this.animation.actions.current !== this.animation.actions.idleShoot
+        ) {
+            this.animation.play("idleShoot");
+        } else if (
             directionIsPressed &&
+            Object.keys(this.mouseKeysPressed).length === 0 &&
             this.animation.actions.current !== this.animation.actions.run
         ) {
             this.animation.play("run");
         } else if (
             !directionIsPressed &&
+            Object.keys(this.mouseKeysPressed).length === 0 &&
             this.animation.actions.current !== this.animation.actions.idle
         ) {
             this.animation.play("idle");
@@ -184,17 +214,18 @@ export default class Player {
 
         const clockDelta = this.clock.getDelta();
 
-        const angleYCameraDirection = Math.atan2(
-            this.camera.instance.position.x - this.model.position.x,
-            this.camera.instance.position.z - this.model.position.z
-        );
         const directionOffset = this.directionOffset(this.keysPressed);
 
-        this.rotateQuaternion.setFromAxisAngle(
-            this.rotateAngle,
-            angleYCameraDirection + directionOffset * -1 // this fixes left and right
-        );
-        this.model.quaternion.rotateTowards(this.rotateQuaternion, 0.2);
+        // const angleYCameraDirection = Math.atan2(
+        //     this.camera.instance.position.x - this.model.position.x,
+        //     this.camera.instance.position.z - this.model.position.z
+        // );
+        // this rotation is needed for third person controls
+        // this.rotateQuaternion.setFromAxisAngle(
+        //     this.rotateAngle,
+        //     angleYCameraDirection + directionOffset * -1 // this fixes left and right
+        // );
+        // thisa.model.quaternion.rotateTowards(this.rotateQuaternion, 0.2);
 
         this.camera.instance.getWorldDirection(this.walkDirection);
         this.walkDirection.y = 0;
@@ -216,7 +247,7 @@ export default class Player {
         // update camera target
         this.cameraTarget.x = this.model.position.x;
         this.cameraTarget.y = this.model.position.y + 1;
-        this.cameraTarget.z = this.model.position.z;
+        this.cameraTarget.z = this.model.position.z - 2;
         this.camera.controls.target = this.cameraTarget;
     }
 

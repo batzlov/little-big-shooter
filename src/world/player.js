@@ -11,7 +11,7 @@ export default class Player {
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
-        this.keysPressed = this.experience.keyEventHandler.keysPressed;
+        this.keysPressed = this.experience.inputHandler.keysPressed;
 
         // TODO: implement player movement
         this.walkDirection = new THREE.Vector3(0, 0, 0);

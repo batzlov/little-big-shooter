@@ -6,7 +6,7 @@ import Debug from "../utils/debug.js";
 import Sizes from "../utils/sizes.js";
 import Time from "../utils/time.js";
 import Resources from "../utils/resources.js";
-import KeyEventHandler from "../utils/key-event-handler.js";
+import InputHandler from "../utils/input-handler.js";
 
 import Camera from "../core/camera.js";
 import Renderer from "../core/renderer.js";
@@ -33,7 +33,7 @@ export default class Experience {
         this.clock = new THREE.Clock();
         this.scene = new THREE.Scene();
         this.resources = new Resources(sources);
-        this.keyEventHandler = new KeyEventHandler();
+        this.inputHandler = new InputHandler();
         this.camera = new Camera();
         this.renderer = new Renderer();
         this.world = new World();

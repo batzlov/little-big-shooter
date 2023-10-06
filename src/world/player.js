@@ -181,62 +181,54 @@ export default class Player {
     }
 
     update() {
-        const directions = ["w", "a", "s", "d"];
-        const directionIsPressed = directions.some(
-            (key) => this.keysPressed[key] == true
-        );
+        this.model.position.copy(this.camera.instance.position);
 
-        // set the right animation
-        if (
-            this.mouseKeysPressed.left &&
-            this.animation.actions.current !== this.animation.actions.idleShoot
-        ) {
-            this.animation.play("idleShoot");
-        } else if (
-            directionIsPressed &&
-            Object.keys(this.mouseKeysPressed).length === 0 &&
-            this.animation.actions.current !== this.animation.actions.run
-        ) {
-            this.animation.play("run");
-        } else if (
-            !directionIsPressed &&
-            Object.keys(this.mouseKeysPressed).length === 0 &&
-            this.animation.actions.current !== this.animation.actions.idle
-        ) {
-            this.animation.play("idle");
-        }
+        // player offset
+        // this.player.model.position.z += -0.22;
+        this.model.position.y -= -1.4;
 
-        this.animation.mixer.update(this.time.delta * 0.001);
+        this.model.rotation.copy(this.camera.instance.rotation);
+        this.model.rotation.y += Math.PI;
+        // this.player.model.applyQuaternion(this.camera.instance.quaternion);
 
-        if (!directionIsPressed) {
-            return;
-        }
-
-        const clockDelta = this.clock.getDelta();
-
-        const directionOffset = this.directionOffset(this.keysPressed);
-
-        // const angleYCameraDirection = Math.atan2(
-        //     this.camera.instance.position.x - this.model.position.x,
-        //     this.camera.instance.position.z - this.model.position.z
+        // const directions = ["w", "a", "s", "d"];
+        // const directionIsPressed = directions.some(
+        //     (key) => this.keysPressed[key] == true
         // );
-        // this rotation is needed for third person controls
-        // this.rotateQuaternion.setFromAxisAngle(
-        //     this.rotateAngle,
-        //     angleYCameraDirection + directionOffset * -1 // this fixes left and right
-        // );
-        // thisa.model.quaternion.rotateTowards(this.rotateQuaternion, 0.2);
-
-        this.camera.instance.getWorldDirection(this.walkDirection);
-        this.walkDirection.y = 0;
-        this.walkDirection.normalize();
-        this.walkDirection.applyAxisAngle(this.rotateAngle, directionOffset);
-
-        const moveX = this.walkDirection.x * this.velocity * clockDelta;
-        const moveZ = -this.walkDirection.z * this.velocity * clockDelta;
-        this.model.position.x += moveX;
-        this.model.position.z += moveZ;
-        this.updateCameraTarget(moveX, moveZ);
+        // // set the right animation
+        // if (
+        //     this.mouseKeysPressed.left &&
+        //     this.animation.actions.current !== this.animation.actions.idleShoot
+        // ) {
+        //     this.animation.play("idleShoot");
+        // } else if (
+        //     directionIsPressed &&
+        //     Object.keys(this.mouseKeysPressed).length === 0 &&
+        //     this.animation.actions.current !== this.animation.actions.run
+        // ) {
+        //     this.animation.play("run");
+        // } else if (
+        //     !directionIsPressed &&
+        //     Object.keys(this.mouseKeysPressed).length === 0 &&
+        //     this.animation.actions.current !== this.animation.actions.idle
+        // ) {
+        //     this.animation.play("idle");
+        // }
+        // this.animation.mixer.update(this.time.delta * 0.001);
+        // if (!directionIsPressed) {
+        //     return;
+        // }
+        // const clockDelta = this.clock.getDelta();
+        // const directionOffset = this.directionOffset(this.keysPressed);
+        // this.camera.instance.getWorldDirection(this.walkDirection);
+        // this.walkDirection.y = 0;
+        // this.walkDirection.normalize();
+        // this.walkDirection.applyAxisAngle(this.rotateAngle, directionOffset);
+        // const moveX = this.walkDirection.x * this.velocity * clockDelta;
+        // const moveZ = -this.walkDirection.z * this.velocity * clockDelta;
+        // this.model.position.x += moveX;
+        // this.model.position.z += moveZ;
+        // this.updateCameraTarget(moveX, moveZ);
     }
 
     updateCameraTarget(moveX, moveZ) {
@@ -248,7 +240,7 @@ export default class Player {
         this.cameraTarget.x = this.model.position.x;
         this.cameraTarget.y = this.model.position.y + 1;
         this.cameraTarget.z = this.model.position.z - 2;
-        this.camera.controls.target = this.cameraTarget;
+        // this.camera.controls.target = this.cameraTarget;
     }
 
     directionOffset(keysPressed = {}) {

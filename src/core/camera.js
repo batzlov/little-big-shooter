@@ -14,7 +14,7 @@ export default class Camera {
 
         // first person view
         this.rotation = new THREE.Quaternion();
-        this.translation = new THREE.Vector3(0, 1.4, 0);
+        this.translation = new THREE.Vector3(0, 1.8, 15);
         this.phi = 0;
         this.phiSpeed = 6;
         this.theta = 0;
@@ -28,7 +28,7 @@ export default class Camera {
 
     initInstance() {
         this.instance = new THREE.PerspectiveCamera(
-            45,
+            75,
             this.sizes.width / this.sizes.height,
             0.1,
             1000
@@ -37,7 +37,11 @@ export default class Camera {
         // this.instance.position.set(0, 8, 10);
 
         // first person camera
-        this.instance.position.set(0, 1.4, -0.1);
+        this.instance.position.set(
+            this.translation.x,
+            this.translation.y,
+            this.translation.z
+        );
         // this.instance.rotation.y = 2 * Math.PI;
 
         this.scene.add(this.instance);
@@ -117,8 +121,6 @@ export default class Camera {
 
         this.translation.add(forward);
         this.translation.add(left);
-
-        console.log(this.translation);
 
         // const forwardVelocity =
         //     (this.input_.key(KEYS.w) ? 1 : 0) +

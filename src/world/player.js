@@ -11,6 +11,21 @@ export default class Player {
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
+        this.debug = this.experience.debug;
+
+        if (true) {
+            this.debugFolder = this.debug.ui.addFolder("player");
+            this.debugObject = {
+                y: 0,
+                zOffset: 0.2,
+            };
+            this.debug.ui
+                .add(this.debugObject, "y")
+                .min(-10)
+                .max(10)
+                .step(0.01)
+                .name("player y");
+        }
 
         // input handling
         this.keysPressed = this.experience.inputHandler.keysPressed;
@@ -86,10 +101,12 @@ export default class Player {
             "Head_2",
             "Head_3",
             "Head_4",
-            "ShoulderPadL",
-            "ShoulderPadR",
-            "Body_2",
+            // "ShoulderPadL",
+            // "ShoulderPadR",
+            // "Body_2",
             // "Body_3",
+            // "Body_4",
+            // "Body_5",
         ];
 
         this.model = this.resource.scene;
@@ -182,39 +199,43 @@ export default class Player {
 
     update() {
         this.model.position.copy(this.camera.instance.position);
-
-        // player offset
-        // this.player.model.position.z += -0.22;
-        this.model.position.y -= -1.4;
-
-        this.model.rotation.copy(this.camera.instance.rotation);
         this.model.rotation.y += Math.PI;
-        // this.player.model.applyQuaternion(this.camera.instance.quaternion);
+        const handleRotationOfPlayer = () => {
+            // player offset
+            this.model.position.y = this.debugObject.y;
+            this.model.position.z += this.debugObject.zOffset;
 
-        // const directions = ["w", "a", "s", "d"];
-        // const directionIsPressed = directions.some(
-        //     (key) => this.keysPressed[key] == true
-        // );
-        // // set the right animation
-        // if (
-        //     this.mouseKeysPressed.left &&
-        //     this.animation.actions.current !== this.animation.actions.idleShoot
-        // ) {
-        //     this.animation.play("idleShoot");
-        // } else if (
-        //     directionIsPressed &&
-        //     Object.keys(this.mouseKeysPressed).length === 0 &&
-        //     this.animation.actions.current !== this.animation.actions.run
-        // ) {
-        //     this.animation.play("run");
-        // } else if (
-        //     !directionIsPressed &&
-        //     Object.keys(this.mouseKeysPressed).length === 0 &&
-        //     this.animation.actions.current !== this.animation.actions.idle
-        // ) {
-        //     this.animation.play("idle");
-        // }
-        // this.animation.mixer.update(this.time.delta * 0.001);
+            this.model.rotation.copy(this.camera.instance.rotation);
+            this.model.rotation.z = 0;
+            this.model.rotation.x = 0;
+            this.model.rotation.y += this.model.rotation.y + Math.PI; // double the rotation and add PI to rotate 180 degrees
+        };
+        handleRotationOfPlayer();
+
+        const directions = ["w", "a", "s", "d"];
+        const directionIsPressed = directions.some(
+            (key) => this.keysPressed[key] == true
+        );
+        // set the right animation
+        if (
+            this.mouseKeysPressed.left &&
+            this.animation.actions.current !== this.animation.actions.idleShoot
+        ) {
+            this.animation.play("idleShoot");
+        } else if (
+            directionIsPressed &&
+            Object.keys(this.mouseKeysPressed).length === 0 &&
+            this.animation.actions.current !== this.animation.actions.run
+        ) {
+            this.animation.play("run");
+        } else if (
+            !directionIsPressed &&
+            Object.keys(this.mouseKeysPressed).length === 0 &&
+            this.animation.actions.current !== this.animation.actions.idle
+        ) {
+            this.animation.play("idle");
+        }
+        this.animation.mixer.update(this.time.delta * 0.001);
         // if (!directionIsPressed) {
         //     return;
         // }

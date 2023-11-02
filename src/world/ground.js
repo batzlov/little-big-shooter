@@ -17,7 +17,7 @@ export default class Ground {
     }
 
     initGeometry() {
-        this.geometry = new THREE.PlaneGeometry(80, 80);
+        this.geometry = new THREE.PlaneGeometry(40 * 3.54, 40 * 3.54);
     }
 
     initTexture() {}

@@ -2,12 +2,22 @@ export default [
     {
         name: "treeModel",
         type: "gltf",
-        path: "models/tree.glb",
+        path: "models/toon-shooter-game-kit/tree-1BkD9JnKrE.glb",
     },
     {
-        name: "smallTreesModel",
+        name: "treeModel2",
         type: "gltf",
-        path: "models/small-trees.glb",
+        path: "models/toon-shooter-game-kit/tree-i4QMw4L64D.glb",
+    },
+    {
+        name: "treeModel3",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/tree-i4QMw4L64D.glb",
+    },
+    {
+        name: "treeModel4",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/tree.glb",
     },
     {
         name: "roadKitModel",
@@ -33,5 +43,10 @@ export default [
         name: "shippingContainerStructureModel",
         type: "gltf",
         path: "models/toon-shooter-game-kit/shipping-container-structure.glb",
+    },
+    {
+        name: "metalFenceModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/metal-fence.glb",
     },
 ];

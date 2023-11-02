@@ -9,6 +9,7 @@ import Ground from "./ground.js";
 import Tree from "./tree.js";
 import ShippingContainer from "./shipping-container.js";
 import ShippingContainerStructure from "./shipping-container-structure.js";
+import MetalFence from "./metal-fence.js";
 import Player from "./player.js";
 
 export default class World {
@@ -37,6 +38,8 @@ export default class World {
         );
 
         this.initSkybox();
+        this.initWorldBoundaries();
+        this.initTrees();
     }
 
     initSkybox() {
@@ -44,13 +47,68 @@ export default class World {
         this.scene.background = new THREE.Color(colors.skyBlue);
     }
 
-    initForrest() {
-        const numberOfTrees = 5;
-        for (let i = 0; i < numberOfTrees; i++) {
-            const tree = new Tree();
+    initWorldBoundaries() {
+        const boundaries = new THREE.Box3().setFromObject(this.scene);
+        const fenceParts = [];
 
-            tree.model.position.x = THREE.MathUtils.randFloat(-5, 5);
-            tree.model.position.z = THREE.MathUtils.randFloat(-5, 5);
+        const fenceWidth = 3.54;
+
+        const startX = boundaries.min.x;
+        const endX = boundaries.max.x - fenceWidth;
+        const startZ = boundaries.min.z;
+        const endZ = boundaries.max.z - fenceWidth;
+
+        for (let i = startX; i < endX; i += 3.54) {
+            let fencePart = new MetalFence({
+                x: i + fenceWidth / 2,
+                y: 0,
+                z: startZ,
+            });
+            fenceParts.push(fencePart);
+
+            fencePart = new MetalFence({
+                x: i + fenceWidth / 2,
+                y: 0,
+                z: -startZ,
+            });
+            fencePart.model.rotation.y = Math.PI;
+            fenceParts.push(fencePart);
+        }
+
+        for (let i = startZ; i < endZ; i += 3.54) {
+            let fencePart = new MetalFence({
+                x: startX,
+                y: 0,
+                z: i + fenceWidth / 2,
+            });
+            fencePart.model.rotation.y = Math.PI / 2;
+            fenceParts.push(fencePart);
+
+            fencePart = new MetalFence({
+                x: -startX,
+                y: 0,
+                z: i + fenceWidth / 2,
+            });
+            fencePart.model.rotation.y = -Math.PI / 2;
+            fenceParts.push(fencePart);
+        }
+    }
+
+    initTrees() {
+        const boundaries = new THREE.Box3().setFromObject(this.scene);
+        const numberOfTrees = 30;
+        for (let i = 0; i < numberOfTrees; i++) {
+            const tree = new Tree({
+                x: THREE.MathUtils.randFloat(
+                    boundaries.min.x,
+                    boundaries.max.x
+                ),
+                y: 0,
+                z: THREE.MathUtils.randFloat(
+                    boundaries.min.z,
+                    boundaries.max.z
+                ),
+            });
 
             this.scene.add(tree.model);
         }

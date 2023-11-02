@@ -16,21 +16,28 @@ export default class Player {
         if (true) {
             this.debugFolder = this.debug.ui.addFolder("player");
             this.debugObject = {
-                y: 0,
-                zOffset: 0.2,
+                offsetX: 0,
+                offsetY: -0.25,
+                offsetZ: 0,
             };
-            this.debug.ui
-                .add(this.debugObject, "y")
+            this.debugFolder
+                .add(this.debugObject, "offsetX")
                 .min(-10)
                 .max(10)
                 .step(0.01)
-                .name("player y");
-            this.debug.ui
-                .add(this.debugObject, "zOffset")
+                .name("offsetX");
+            this.debugFolder
+                .add(this.debugObject, "offsetY")
                 .min(-10)
                 .max(10)
                 .step(0.01)
-                .name("player z offset");
+                .name("offsetY");
+            this.debugFolder
+                .add(this.debugObject, "offsetZ")
+                .min(-10)
+                .max(10)
+                .step(0.01)
+                .name("offsetZ");
         }
 
         // input handling
@@ -145,8 +152,8 @@ export default class Player {
 
         const handleRotationOfPlayer = () => {
             // player offset
-            this.model.position.y = this.debugObject.y;
-            this.model.position.z += this.debugObject.zOffset;
+            this.model.position.y = this.debugObject.offsetY;
+            this.model.position.z += this.debugObject.offsetZ;
 
             this.model.rotation.y = this.camera.instance.rotation.y + Math.PI;
             // this.model.rotation.x = this.camera.instance.rotation.x;

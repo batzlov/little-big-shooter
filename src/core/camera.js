@@ -11,10 +11,11 @@ export default class Camera {
         this.canvas = this.experience.canvas;
         this.time = this.experience.time;
         this.inputHandler = this.experience.inputHandler;
+        this.debug = this.experience.debug;
 
         // first person view
         this.rotation = new THREE.Quaternion();
-        this.translation = new THREE.Vector3(0, 1.8, 15);
+        this.translation = new THREE.Vector3(0, 1.5, 15);
         this.phi = 0;
         this.phiSpeed = 6;
         this.theta = 0;
@@ -22,13 +23,40 @@ export default class Camera {
         this.headBobActive = false;
         this.headBobTimer = 0;
 
+        if (true) {
+            this.debugFolder = this.debug.ui.addFolder("CAMERA");
+            this.debugObject = {
+                translationX: this.translation.x,
+                translationY: this.translation.y,
+                translationZ: this.translation.z,
+            };
+            this.debug.ui
+                .add(this.debugObject, "translationX")
+                .min(-20)
+                .max(20)
+                .step(0.1)
+                .name("translationX");
+            this.debug.ui
+                .add(this.debugObject, "translationY")
+                .min(-20)
+                .max(20)
+                .step(0.1)
+                .name("translationY");
+            this.debug.ui
+                .add(this.debugObject, "translationZ")
+                .min(-20)
+                .max(20)
+                .step(0.1)
+                .name("translationZ");
+        }
+
         this.initInstance();
         // this.initControls();
     }
 
     initInstance() {
         this.instance = new THREE.PerspectiveCamera(
-            75,
+            90,
             this.sizes.width / this.sizes.height,
             0.1,
             1000
@@ -42,6 +70,7 @@ export default class Camera {
             this.translation.y,
             this.translation.z
         );
+        this.instance.rotation.reorder("YXZ");
         // this.instance.rotation.y = 2 * Math.PI;
 
         this.scene.add(this.instance);
@@ -66,7 +95,6 @@ export default class Camera {
         this.updateRotation();
         this.updateTranslation();
         this.updateCamera();
-        // this.controls.update();
     }
 
     updateRotation() {
@@ -121,31 +149,6 @@ export default class Camera {
 
         this.translation.add(forward);
         this.translation.add(left);
-
-        // const forwardVelocity =
-        //     (this.input_.key(KEYS.w) ? 1 : 0) +
-        //     (this.input_.key(KEYS.s) ? -1 : 0);
-        // const strafeVelocity =
-        //     (this.input_.key(KEYS.a) ? 1 : 0) +
-        //     (this.input_.key(KEYS.d) ? -1 : 0);
-
-        // const qx = new THREE.Quaternion();
-        // qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.phi_);
-
-        // const forward = new THREE.Vector3(0, 0, -1);
-        // forward.applyQuaternion(qx);
-        // forward.multiplyScalar(forwardVelocity * timeElapsedS * 10);
-
-        // const left = new THREE.Vector3(-1, 0, 0);
-        // left.applyQuaternion(qx);
-        // left.multiplyScalar(strafeVelocity * timeElapsedS * 10);
-
-        // this.translation_.add(forward);
-        // this.translation_.add(left);
-
-        // if (forwardVelocity != 0 || strafeVelocity != 0) {
-        //     this.headBobActive_ = true;
-        // }
     }
 
     updateCamera() {

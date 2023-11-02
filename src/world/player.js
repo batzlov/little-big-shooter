@@ -25,6 +25,12 @@ export default class Player {
                 .max(10)
                 .step(0.01)
                 .name("player y");
+            this.debug.ui
+                .add(this.debugObject, "zOffset")
+                .min(-10)
+                .max(10)
+                .step(0.01)
+                .name("player z offset");
         }
 
         // input handling
@@ -44,93 +50,30 @@ export default class Player {
     }
 
     initModel() {
-        const hideWeapons = [
-            "Revolver_1",
-            "Revolver_2",
-            "Revolver_3",
-            "Revolver_4",
-            "Revolver_Small_1",
-            "Revolver_Small_2",
-            "Revolver_Small_3",
-            "Revolver_Small_4",
-            "Sniper_1",
-            "Sniper_2",
-            "Sniper_3",
-            "Sniper_2_1",
-            "Sniper_2_2",
-            "Sniper_2_3",
-            "Shotgun_1",
-            "Shotgun_2",
-            "Shotgun_3",
-            "Shotgun_4",
-            "ShortCannon_1",
-            "ShortCannon_2",
-            "ShortCannon_3",
-            "SMG_1",
-            "SMG_2",
-            "SMG_3",
-            "SMG_4",
-            "Pistol_1",
-            "Pistol_2",
-            "Pistol_3",
-            "GrenadeLauncher_1",
-            "GrenadeLauncher_2",
-            "GrenadeLauncher_3",
-            "GrenadeLauncher_4",
-            // "AK_1",
-            // "AK_2",
-            // "AK_3",
-            // "AK_4",
-            "Shovel_1",
-            "Shovel_2",
-            "Shovel_3",
-            "Knife_1_1",
-            "Knife_1_2",
-            "Knife_1_3",
-            "Knife_1_4",
-            "Knife_2_1",
-            "Knife_2_2",
-            "Knife_2_3",
-            "RocketLauncher_1",
-            "RocketLauncher_2",
-            "RocketLauncher_3",
-            "RocketLauncher_4",
-        ];
-
-        const hideBodyParts = [
-            "Head_2",
-            "Head_3",
-            "Head_4",
-            // "ShoulderPadL",
-            // "ShoulderPadR",
-            // "Body_2",
-            // "Body_3",
-            // "Body_4",
-            // "Body_5",
-        ];
-
         this.model = this.resource.scene;
         this.model.position.y = 0.01;
         this.model.rotation.y = Math.PI;
         this.scene.add(this.model);
 
-        // hide node used weapons
-        this.model.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-                if (hideWeapons.includes(child.name)) {
-                    child.visible = false;
-                }
-            }
-        });
+        // hide weapons that are initially visible
+        this.hideModelPart("Revolver");
+        this.hideModelPart("Revolver_Small");
+        this.hideModelPart("Sniper");
+        this.hideModelPart("Sniper_2");
+        this.hideModelPart("Shotgun");
+        this.hideModelPart("ShortCannon");
+        this.hideModelPart("SMG");
+        this.hideModelPart("Pistol");
+        this.hideModelPart("GrenadeLauncher");
+        this.hideModelPart("Shovel");
+        this.hideModelPart("Knife_1");
+        this.hideModelPart("Knife_2");
+        this.hideModelPart("RocketLauncher");
 
         // hide character parts that disturbs the camera view
-        this.model.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-                if (hideBodyParts.includes(child.name)) {
-                    child.visible = false;
-                }
-            }
-        });
+        this.hideModelPart("Head_2");
+        this.hideModelPart("Head_3");
+        this.hideModelPart("Head_4");
     }
 
     initAnimations() {
@@ -199,16 +142,14 @@ export default class Player {
 
     update() {
         this.model.position.copy(this.camera.instance.position);
-        this.model.rotation.y += Math.PI;
+
         const handleRotationOfPlayer = () => {
             // player offset
             this.model.position.y = this.debugObject.y;
             this.model.position.z += this.debugObject.zOffset;
 
-            this.model.rotation.copy(this.camera.instance.rotation);
-            this.model.rotation.z = 0;
-            this.model.rotation.x = 0;
-            this.model.rotation.y += this.model.rotation.y + Math.PI; // double the rotation and add PI to rotate 180 degrees
+            this.model.rotation.y = this.camera.instance.rotation.y + Math.PI;
+            // this.model.rotation.x = this.camera.instance.rotation.x;
         };
         handleRotationOfPlayer();
 
@@ -235,56 +176,27 @@ export default class Player {
         ) {
             this.animation.play("idle");
         }
+
         this.animation.mixer.update(this.time.delta * 0.001);
-        // if (!directionIsPressed) {
-        //     return;
-        // }
-        // const clockDelta = this.clock.getDelta();
-        // const directionOffset = this.directionOffset(this.keysPressed);
-        // this.camera.instance.getWorldDirection(this.walkDirection);
-        // this.walkDirection.y = 0;
-        // this.walkDirection.normalize();
-        // this.walkDirection.applyAxisAngle(this.rotateAngle, directionOffset);
-        // const moveX = this.walkDirection.x * this.velocity * clockDelta;
-        // const moveZ = -this.walkDirection.z * this.velocity * clockDelta;
-        // this.model.position.x += moveX;
-        // this.model.position.z += moveZ;
-        // this.updateCameraTarget(moveX, moveZ);
     }
 
-    updateCameraTarget(moveX, moveZ) {
-        // move camera
-        this.camera.instance.position.x += moveX;
-        this.camera.instance.position.z += moveZ;
-
-        // update camera target
-        this.cameraTarget.x = this.model.position.x;
-        this.cameraTarget.y = this.model.position.y + 1;
-        this.cameraTarget.z = this.model.position.z - 2;
-        // this.camera.controls.target = this.cameraTarget;
+    hideModelPart(name) {
+        this.model.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+                if (child.name.includes(name)) {
+                    child.visible = false;
+                }
+            }
+        });
     }
 
-    directionOffset(keysPressed = {}) {
-        var directionOffset = 0;
-
-        if (keysPressed.w && keysPressed.a) {
-            directionOffset = Math.PI / 4 + Math.PI / 2;
-        } else if (keysPressed.w && keysPressed.d) {
-            directionOffset = -Math.PI / 4 - Math.PI / 2;
-        } else if (keysPressed.s && keysPressed.a) {
-            directionOffset = Math.PI / 4;
-        } else if (keysPressed.s && keysPressed.d) {
-            directionOffset = -Math.PI / 4;
-        } else if (keysPressed.w) {
-            directionOffset = Math.PI; // w and s are changed from default
-        } else if (keysPressed.s) {
-            directionOffset = 0;
-        } else if (keysPressed.a) {
-            directionOffset = Math.PI / 2;
-        } else if (keysPressed.d) {
-            directionOffset = -Math.PI / 2;
-        }
-
-        return directionOffset;
+    showModelPart(name) {
+        this.model.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+                if (child.name.includes(name)) {
+                    child.visible = true;
+                }
+            }
+        });
     }
 }

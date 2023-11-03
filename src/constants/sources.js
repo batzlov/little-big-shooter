@@ -1,5 +1,10 @@
 export default [
     {
+        name: "crosshairTexture",
+        type: "texture",
+        path: "crosshair.png",
+    },
+    {
         name: "treeModel",
         type: "gltf",
         path: "models/toon-shooter-game-kit/tree-1BkD9JnKrE.glb",

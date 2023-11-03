@@ -16,6 +16,7 @@ export default class World {
     constructor() {
         this.experience = new Experience();
         this.scene = this.experience.scene;
+        this.renderer = this.experience.renderer;
         this.resources = this.experience.resources;
         this.camera = this.experience.camera;
 
@@ -38,6 +39,7 @@ export default class World {
         );
 
         this.initSkybox();
+        this.initCrosshair();
         this.initWorldBoundaries();
         this.initTrees();
     }
@@ -45,6 +47,26 @@ export default class World {
     initSkybox() {
         // TODO: replace with cube texture in the future
         this.scene.background = new THREE.Color(colors.skyBlue);
+    }
+
+    initCrosshair() {
+        const crosshairTexture = this.resources.items.crosshairTexture;
+        crosshairTexture.anisotropy =
+            this.renderer.instance.capabilities.getMaxAnisotropy();
+
+        this.crosshair = new THREE.Sprite(
+            new THREE.SpriteMaterial({
+                map: crosshairTexture,
+                color: 0xffffff,
+                fog: false,
+                depthTest: false,
+                depthWrite: false,
+            })
+        );
+        this.crosshair.scale.set(1, 1, 1);
+        this.crosshair.position.set(0, 0, -10);
+
+        this.scene.add(this.crosshair);
     }
 
     initWorldBoundaries() {
@@ -599,5 +621,19 @@ export default class World {
         if (this.player) {
             this.player.update();
         }
+
+        if (this.crosshair) {
+            this.updateCrosshair();
+        }
+    }
+
+    updateCrosshair() {
+        const target = new THREE.Vector3(0, 0, -12)
+            .applyQuaternion(this.camera.instance.quaternion)
+            .add(this.camera.instance.position);
+
+        this.crosshair.position.x = target.x;
+        this.crosshair.position.y = target.y;
+        this.crosshair.position.z = target.z;
     }
 }

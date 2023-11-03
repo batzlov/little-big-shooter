@@ -51,6 +51,7 @@ export default class Camera {
         }
 
         this.initInstance();
+        this.initControls();
         // this.initControls();
     }
 

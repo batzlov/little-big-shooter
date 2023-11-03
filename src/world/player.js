@@ -156,7 +156,6 @@ export default class Player {
             this.model.position.z += this.debugObject.offsetZ;
 
             this.model.rotation.y = this.camera.instance.rotation.y + Math.PI;
-            // this.model.rotation.x = this.camera.instance.rotation.x;
         };
         handleRotationOfPlayer();
 

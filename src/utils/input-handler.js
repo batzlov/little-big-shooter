@@ -1,5 +1,10 @@
+import Experience from "../core/experience";
+
 export default class InputHandler {
     constructor() {
+        this.experience = new Experience();
+        this.canvas = this.experience.canvas;
+
         this.keysPressed = {};
         this.mouseKeysPressed = {};
         this.cursorPosition = { x: 0, y: 0 };
@@ -32,6 +37,10 @@ export default class InputHandler {
 
         window.addEventListener("mousemove", (event) => {
             this.onMouseMove(event);
+        });
+
+        window.addEventListener("dblclick", (event) => {
+            this.onDblClick(event);
         });
     }
 
@@ -75,6 +84,25 @@ export default class InputHandler {
             this.currentMouseState.mouseX - this.previousMouseState.mouseX;
         this.currentMouseState.mouseYDelta =
             this.currentMouseState.mouseY - this.previousMouseState.mouseY;
+    }
+
+    onDblClick() {
+        const fullscreenElement =
+            document.fullscreenElement || document.webkitFullscreenElement;
+
+        if (!fullscreenElement) {
+            if (this.canvas.requestFullscreen) {
+                this.canvas.requestFullscreen();
+            } else if (this.canvas.webkitRequestFullscreen) {
+                this.canvas.webkitRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
     }
 
     isReady() {

@@ -12,7 +12,7 @@ export default [
     {
         name: "treeModel3",
         type: "gltf",
-        path: "models/toon-shooter-game-kit/tree-i4QMw4L64D.glb",
+        path: "models/toon-shooter-game-kit/tree-QeYQEpgPcC.glb",
     },
     {
         name: "treeModel4",

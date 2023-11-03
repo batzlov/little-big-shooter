@@ -12,13 +12,8 @@ export default class Tree {
             this.resources.items.treeModel3,
             this.resources.items.treeModel4,
         ];
-        console.log(
-            this.models,
-            Math.floor(Math.random() * this.models.length)
-        );
         this.resource =
-            // this.models[Math.floor(Math.random() * this.models.length)];
-            this.models[2];
+            this.models[Math.floor(Math.random() * this.models.length)];
         this.position = position;
 
         this.initModel();

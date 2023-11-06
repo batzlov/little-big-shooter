@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as CANNON from "cannon";
 
 import Experience from "../core/experience.js";
 
@@ -18,9 +19,11 @@ export default class World {
         this.scene = this.experience.scene;
         this.renderer = this.experience.renderer;
         this.resources = this.experience.resources;
+        this.time = this.experience.time;
         this.camera = this.experience.camera;
 
         this.resources.on("ready", () => {
+            this.initPhysics();
             this.initWorld();
 
             this.player = new Player();
@@ -42,6 +45,11 @@ export default class World {
         this.initCrosshair();
         this.initWorldBoundaries();
         this.initTrees();
+    }
+
+    initPhysics() {
+        this.physicsWorld = new CANNON.World();
+        this.physicsWorld.gravity.set(0, -9.82, 0);
     }
 
     initSkybox() {
@@ -624,6 +632,10 @@ export default class World {
 
         if (this.crosshair) {
             this.updateCrosshair();
+        }
+
+        if (this.physicsWorld) {
+            this.physicsWorld.step(1 / 60, this.time.delta, 3);
         }
     }
 

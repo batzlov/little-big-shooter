@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as CANNON from "cannon";
 
 import Experience from "../core/experience";
 
@@ -8,6 +9,7 @@ export default class Player {
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
         this.resource = this.resources.items.characterSoldierModel;
+        this.world = this.experience.world;
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
@@ -53,12 +55,14 @@ export default class Player {
         this.velocity = 5;
 
         this.initModel();
+        this.initPhysics();
         this.initAnimations();
     }
 
     initModel() {
         this.model = this.resource.scene;
         this.model.position.y = 0.01;
+        // this.model.position.y = 10;
         this.model.rotation.y = Math.PI;
         this.scene.add(this.model);
 
@@ -81,6 +85,17 @@ export default class Player {
         this.hideModelPart("Head_2");
         this.hideModelPart("Head_3");
         this.hideModelPart("Head_4");
+    }
+
+    initPhysics() {
+        this.shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
+        this.body = new CANNON.Body({
+            mass: 1,
+            position: new CANNON.Vec3(0, 0, 0),
+            shape: this.shape,
+        });
+
+        this.world.physicsWorld.addBody(this.body);
     }
 
     initAnimations() {
@@ -184,6 +199,9 @@ export default class Player {
         }
 
         this.animation.mixer.update(this.time.delta * 0.001);
+
+        // copy physics
+        this.body.position.copy(this.model.position);
     }
 
     hideModelPart(name) {

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import CannonDebugger from "cannon-es-debugger";
 
 import sources from "../constants/sources.js";
 
@@ -10,6 +11,7 @@ import InputHandler from "../utils/input-handler.js";
 
 import Camera from "../core/camera.js";
 import Renderer from "../core/renderer.js";
+import PhysicsWorld from "../core/physics-world.js";
 
 import World from "../world/world.js";
 
@@ -34,6 +36,7 @@ export default class Experience {
         this.scene = new THREE.Scene();
         this.resources = new Resources(sources);
         this.inputHandler = new InputHandler();
+        this.physicsWorld = new PhysicsWorld();
         this.camera = new Camera();
         this.renderer = new Renderer();
         this.world = new World();
@@ -66,6 +69,7 @@ export default class Experience {
         this.world.update();
         this.renderer.update();
         this.inputHandler.update();
+        this.physicsWorld.update();
     }
 
     destroy() {

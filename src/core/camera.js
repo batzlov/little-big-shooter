@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import * as CANNON from "cannon";
+import * as CANNON from "cannon-es";
 import Experience from "./experience.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
@@ -11,7 +11,7 @@ export default class Camera {
         this.scene = this.experience.scene;
         this.canvas = this.experience.canvas;
         this.time = this.experience.time;
-        this.world = this.experience.world;
+        this.physicsWorld = this.experience.physicsWorld;
         this.inputHandler = this.experience.inputHandler;
         this.debug = this.experience.debug;
 
@@ -53,7 +53,7 @@ export default class Camera {
         }
 
         this.initInstance();
-        // this.initPhysics();
+        this.initPhysics();
         this.initControls();
         // this.initControls();
     }
@@ -83,12 +83,22 @@ export default class Camera {
     initPhysics() {
         this.shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
         this.body = new CANNON.Body({
-            mass: 1,
-            position: new CANNON.Vec3(0, 0, 0),
+            mass: 5,
+            position: new CANNON.Vec3(
+                this.translation.x,
+                this.translation.y,
+                this.translation.z
+            ),
             shape: this.shape,
+            material: new CANNON.Material("physics"),
+            linearDamping: 0.9,
         });
 
-        this.world.physicsWorld.addBody(this.body);
+        this.physicsWorld.instance.addBody(this.body);
+
+        this.body.addEventListener("collide", (event) => {
+            console.log("collided");
+        });
     }
 
     initControls() {
@@ -167,8 +177,16 @@ export default class Camera {
     }
 
     updateCamera() {
-        this.instance.quaternion.copy(this.rotation);
-        this.instance.position.copy(this.translation);
+        this.body.quaternion.copy(this.rotation);
+        this.body.velocity.set(
+            this.translation.x,
+            this.translation.y,
+            this.translation.z
+        );
+        this.body.position.copy(this.translation);
+
+        this.instance.quaternion.copy(this.body.quaternion);
+        this.instance.position.copy(this.body.position);
     }
 
     clamp(x, a, b) {

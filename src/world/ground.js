@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import * as CANNON from "cannon";
+import * as CANNON from "cannon-es";
 
 import Experience from "../core/experience.js";
 
@@ -11,6 +11,7 @@ export default class Ground {
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
         this.world = this.experience.world;
+        this.physicsWorld = this.experience.physicsWorld;
 
         this.initGeometry();
         this.initTexture();
@@ -45,6 +46,7 @@ export default class Ground {
             mass: 0,
             position: new CANNON.Vec3(0, 0, 0),
             shape: this.shape,
+            material: new CANNON.Material("physics"),
         });
 
         this.body.quaternion.setFromAxisAngle(
@@ -52,6 +54,6 @@ export default class Ground {
             Math.PI * 0.5
         );
 
-        this.world.physicsWorld.addBody(this.body);
+        this.physicsWorld.instance.addBody(this.body);
     }
 }

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import * as CANNON from "cannon";
+import * as CANNON from "cannon-es";
 
 import Experience from "../core/experience";
 
@@ -10,6 +10,7 @@ export default class Player {
         this.resources = this.experience.resources;
         this.resource = this.resources.items.characterSoldierModel;
         this.world = this.experience.world;
+        this.physicsWorld = this.experience.physicsWorld;
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
@@ -55,7 +56,7 @@ export default class Player {
         this.velocity = 5;
 
         this.initModel();
-        this.initPhysics();
+        // this.initPhysics();
         this.initAnimations();
     }
 
@@ -95,12 +96,7 @@ export default class Player {
             shape: this.shape,
         });
 
-        this.world.physicsWorld.addBody(this.body);
-        this.body.addEventListener("collide", (event) => {
-            console.log(event);
-        });
-
-        console.log(this.world.physicsWorld);
+        this.physicsWorld.instance.addBody(this.body);
     }
 
     initAnimations() {
@@ -168,7 +164,8 @@ export default class Player {
     }
 
     update() {
-        this.model.position.copy(this.camera.instance.position);
+        this.model.position.copy(this.camera.body.position);
+        // this.body.position.copy(this.camera.body.position);
 
         const handleRotationOfPlayer = () => {
             // player offset
@@ -206,7 +203,7 @@ export default class Player {
         this.animation.mixer.update(this.time.delta * 0.001);
 
         // copy physics
-        this.body.position.copy(this.model.position);
+        // this.body.position.copy(this.model.position);
     }
 
     hideModelPart(name) {

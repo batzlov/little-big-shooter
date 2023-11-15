@@ -1,6 +1,7 @@
 import * as THREE from "three";
-import * as CANNON from "cannon";
-
+import * as CANNON from "cannon-es";
+import CannonDebugger from "cannon-es-debugger";
+import EventEmitter from "../utils/event-emitter.js";
 import Experience from "../core/experience.js";
 
 import colors from "../constants/colors.js";
@@ -24,7 +25,7 @@ export default class World {
         this.camera = this.experience.camera;
 
         this.resources.on("ready", () => {
-            this.initPhysics();
+            // this.initPhysics();
             this.initWorld();
 
             this.player = new Player();
@@ -50,7 +51,11 @@ export default class World {
 
     initPhysics() {
         this.physicsWorld = new CANNON.World();
-        this.physicsWorld.gravity.set(0, -9.82, 0);
+        this.physicsWorld.instancegravity.set(0, -9.82, 0);
+        this.physicsWorldDebugger = new CannonDebugger(
+            this.scene,
+            this.physicsWorld
+        );
     }
 
     initSkybox() {
@@ -635,9 +640,22 @@ export default class World {
             this.updateCrosshair();
         }
 
-        if (this.physicsWorld) {
-            this.physicsWorld.step(1 / 60, this.time.delta, 3);
+        if (this.obstacles) {
+            this.obstacles.forEach((obstacle) => {
+                if (obstacle.update) {
+                    obstacle.update();
+                }
+            });
         }
+        // if (this.physicsWorld) {
+        //     this.physicsWorldDebugger.update();
+
+        //     this.obstacles.forEach((obstacle) => {
+        //         if (obstacle.update) {
+        //             obstacle.update();
+        //         }
+        //     });
+        // }
     }
 
     updateCrosshair() {

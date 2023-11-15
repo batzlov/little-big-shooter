@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as CANNON from "cannon";
 import Experience from "./experience.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
@@ -10,6 +11,7 @@ export default class Camera {
         this.scene = this.experience.scene;
         this.canvas = this.experience.canvas;
         this.time = this.experience.time;
+        this.world = this.experience.world;
         this.inputHandler = this.experience.inputHandler;
         this.debug = this.experience.debug;
 
@@ -23,7 +25,7 @@ export default class Camera {
         this.headBobActive = false;
         this.headBobTimer = 0;
 
-        if (true) {
+        if (this.debug.active) {
             this.debugFolder = this.debug.ui.addFolder("CAMERA");
             this.debugObject = {
                 translationX: this.translation.x,
@@ -51,6 +53,7 @@ export default class Camera {
         }
 
         this.initInstance();
+        // this.initPhysics();
         this.initControls();
         // this.initControls();
     }
@@ -75,6 +78,17 @@ export default class Camera {
         // this.instance.rotation.y = 2 * Math.PI;
 
         this.scene.add(this.instance);
+    }
+
+    initPhysics() {
+        this.shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
+        this.body = new CANNON.Body({
+            mass: 1,
+            position: new CANNON.Vec3(0, 0, 0),
+            shape: this.shape,
+        });
+
+        this.world.physicsWorld.addBody(this.body);
     }
 
     initControls() {

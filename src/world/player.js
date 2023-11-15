@@ -15,13 +15,13 @@ export default class Player {
         this.camera = this.experience.camera;
         this.debug = this.experience.debug;
 
-        if (true) {
+        this.debugObject = {
+            offsetX: 0,
+            offsetY: -0.25,
+            offsetZ: 0,
+        };
+        if (this.debug.active) {
             this.debugFolder = this.debug.ui.addFolder("player");
-            this.debugObject = {
-                offsetX: 0,
-                offsetY: -0.25,
-                offsetZ: 0,
-            };
             this.debugFolder
                 .add(this.debugObject, "offsetX")
                 .min(-10)
@@ -96,6 +96,11 @@ export default class Player {
         });
 
         this.world.physicsWorld.addBody(this.body);
+        this.body.addEventListener("collide", (event) => {
+            console.log(event);
+        });
+
+        console.log(this.world.physicsWorld);
     }
 
     initAnimations() {

@@ -27,7 +27,7 @@ export default class ShippingContainerStructure {
     initPhysics() {
         this.shape = new CANNON.Box(new CANNON.Vec3(2, 2, 2));
         this.body = new CANNON.Body({
-            mass: 0,
+            mass: 5,
             position: new CANNON.Vec3(
                 this.position.x,
                 this.position.y,

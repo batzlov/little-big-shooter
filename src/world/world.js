@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import gsap from "gsap";
 import CannonDebugger from "cannon-es-debugger";
 import EventEmitter from "../utils/event-emitter.js";
 import Experience from "../core/experience.js";
@@ -78,8 +79,8 @@ export default class World {
                 depthWrite: false,
             })
         );
-        this.crosshair.scale.set(0.2, 0.2, 0.2);
-        this.crosshair.position.set(0, 0, -10);
+        this.crosshair.scale.set(0.1, 0.1, 0.1);
+        // this.crosshair.position.set(0, 0, -10);
 
         this.scene.add(this.crosshair);
     }
@@ -651,10 +652,26 @@ export default class World {
     }
 
     updateCrosshair() {
-        const target = new THREE.Vector3(0, 0, -12)
-            .applyQuaternion(this.firstPersonControls.quaternion)
-            // .applyQuaternion(this.firstPersonControls.yawObject.quaternion)
-            .add(this.firstPersonControls.yawObject.position);
+        const target = new THREE.Vector3();
+
+        target.unproject(this.camera.instance);
+        const ray = new THREE.Ray(
+            this.camera.body.position,
+            target.sub(this.camera.body.position).normalize()
+        );
+
+        var distanceFromCamera = 10;
+        target.addVectors(
+            this.camera.body.position,
+            ray.direction.multiplyScalar(distanceFromCamera)
+        );
+
+        gsap.to(this.crosshair.position, {
+            x: target.x,
+            y: target.y,
+            z: target.z,
+            duration: 0.5,
+        });
 
         // this.crosshair.position.x = target.x;
         // this.crosshair.position.y = target.y;

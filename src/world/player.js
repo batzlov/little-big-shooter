@@ -55,9 +55,9 @@ export default class Player {
         this.fadeDuration = 0.2;
         this.velocity = 5;
 
-        this.initModel();
+        // this.initModel();
         // this.initPhysics();
-        this.initAnimations();
+        // this.initAnimations();
     }
 
     initModel() {
@@ -164,44 +164,39 @@ export default class Player {
     }
 
     update() {
-        this.model.position.copy(this.camera.body.position);
-        // this.body.position.copy(this.camera.body.position);
-
-        const handleRotationOfPlayer = () => {
-            // player offset
-            this.model.position.y = this.debugObject.offsetY;
-            this.model.position.z += this.debugObject.offsetZ;
-
-            this.model.rotation.y = this.camera.instance.rotation.y + Math.PI;
-        };
-        handleRotationOfPlayer();
-
-        const directions = ["w", "a", "s", "d"];
-        const directionIsPressed = directions.some(
-            (key) => this.keysPressed[key] == true
-        );
-        // set the right animation
-        if (
-            this.mouseKeysPressed.left &&
-            this.animation.actions.current !== this.animation.actions.idleShoot
-        ) {
-            this.animation.play("idleShoot");
-        } else if (
-            directionIsPressed &&
-            Object.keys(this.mouseKeysPressed).length === 0 &&
-            this.animation.actions.current !== this.animation.actions.run
-        ) {
-            this.animation.play("run");
-        } else if (
-            !directionIsPressed &&
-            Object.keys(this.mouseKeysPressed).length === 0 &&
-            this.animation.actions.current !== this.animation.actions.idle
-        ) {
-            this.animation.play("idle");
-        }
-
-        this.animation.mixer.update(this.time.delta * 0.001);
-
+        // this.model.position.copy(this.camera.body.position);
+        // // this.body.position.copy(this.camera.body.position);
+        // const handleRotationOfPlayer = () => {
+        //     // player offset
+        //     this.model.position.y = this.debugObject.offsetY;
+        //     this.model.position.z += this.debugObject.offsetZ;
+        //     this.model.rotation.y = this.camera.instance.rotation.y + Math.PI;
+        // };
+        // handleRotationOfPlayer();
+        // const directions = ["w", "a", "s", "d"];
+        // const directionIsPressed = directions.some(
+        //     (key) => this.keysPressed[key] == true
+        // );
+        // // set the right animation
+        // if (
+        //     this.mouseKeysPressed.left &&
+        //     this.animation.actions.current !== this.animation.actions.idleShoot
+        // ) {
+        //     this.animation.play("idleShoot");
+        // } else if (
+        //     directionIsPressed &&
+        //     Object.keys(this.mouseKeysPressed).length === 0 &&
+        //     this.animation.actions.current !== this.animation.actions.run
+        // ) {
+        //     this.animation.play("run");
+        // } else if (
+        //     !directionIsPressed &&
+        //     Object.keys(this.mouseKeysPressed).length === 0 &&
+        //     this.animation.actions.current !== this.animation.actions.idle
+        // ) {
+        //     this.animation.play("idle");
+        // }
+        // this.animation.mixer.update(this.time.delta * 0.001);
         // copy physics
         // this.body.position.copy(this.model.position);
     }

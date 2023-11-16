@@ -7,11 +7,12 @@ import Debug from "../utils/debug.js";
 import Sizes from "../utils/sizes.js";
 import Time from "../utils/time.js";
 import Resources from "../utils/resources.js";
-import InputHandler from "../utils/input-handler.js";
+import InputHandler from "./input-handler.js";
 
 import Camera from "../core/camera.js";
 import Renderer from "../core/renderer.js";
 import PhysicsWorld from "../core/physics-world.js";
+import FirstPersonControls from "../core/first-person-controls.js";
 
 import World from "../world/world.js";
 
@@ -39,7 +40,12 @@ export default class Experience {
         this.physicsWorld = new PhysicsWorld();
         this.camera = new Camera();
         this.renderer = new Renderer();
+        this.firstPersonControls = new FirstPersonControls(
+            this.camera.instance,
+            this.camera.body
+        );
         this.world = new World();
+        this.scene.add(this.firstPersonControls.getObject());
 
         this.initEvents();
     }
@@ -67,9 +73,10 @@ export default class Experience {
     update() {
         this.camera.update();
         this.world.update();
-        this.renderer.update();
         this.inputHandler.update();
         this.physicsWorld.update();
+        this.firstPersonControls.update(this.clock.getDelta());
+        this.renderer.update();
     }
 
     destroy() {

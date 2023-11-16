@@ -1,4 +1,4 @@
-import Experience from "../core/experience";
+import Experience from "./experience";
 
 export default class InputHandler {
     constructor() {
@@ -18,6 +18,20 @@ export default class InputHandler {
             mouseY: 0,
         };
         this.previousMouseState = null;
+
+        this.movements = {
+            left: false,
+            right: false,
+            forward: false,
+            backward: false,
+            up: false,
+        };
+        this.mouseMovements = {
+            movementX: 0,
+            movementY: 0,
+        };
+
+        this.lockPointer = false;
 
         window.addEventListener("keydown", (event) => {
             this.onKeyDown(event);
@@ -46,10 +60,77 @@ export default class InputHandler {
 
     onKeyDown(event) {
         this.keysPressed[event.key.toLowerCase()] = true;
+
+        //
+        switch (event.code) {
+            case "KeyW":
+            case "ArrowUp":
+                this.movements.forward = true;
+                break;
+
+            case "KeyA":
+            case "ArrowLeft":
+                this.movements.left = true;
+                break;
+
+            case "KeyS":
+            case "ArrowDown":
+                this.movements.backward = true;
+                break;
+
+            case "KeyD":
+            case "ArrowRight":
+                this.movements.right = true;
+                break;
+
+            case "KeyF":
+                this.lockPointer = true;
+                this.toggleGameInstructions();
+                break;
+
+            case "Escape":
+                this.lockPointer = false;
+                this.toggleGameInstructions();
+                break;
+
+            case "Space":
+                this.movements.up = true;
+                break;
+        }
+    }
+
+    toggleGameInstructions() {
+        document.querySelector(".game-instructions").classList.toggle("hidden");
     }
 
     onKeyUp(event) {
         delete this.keysPressed[event.key.toLowerCase()];
+
+        switch (event.code) {
+            case "KeyW":
+            case "ArrowUp":
+                this.movements.forward = false;
+                break;
+
+            case "KeyA":
+            case "ArrowLeft":
+                this.movements.left = false;
+                break;
+
+            case "KeyS":
+            case "ArrowDown":
+                this.movements.backward = false;
+                break;
+
+            case "KeyD":
+            case "ArrowRight":
+                this.movements.right = false;
+                break;
+
+            case "Space":
+                this.movements.up = false;
+                break;
+        }
     }
 
     onMouseDown(event) {
@@ -84,6 +165,10 @@ export default class InputHandler {
             this.currentMouseState.mouseX - this.previousMouseState.mouseX;
         this.currentMouseState.mouseYDelta =
             this.currentMouseState.mouseY - this.previousMouseState.mouseY;
+
+        //
+        this.mouseMovements.movementX = event.movementX;
+        this.mouseMovements.movementY = event.movementY;
     }
 
     onDblClick() {

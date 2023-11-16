@@ -10,7 +10,7 @@ export default class PhysicsWorld {
 
         this.initInstance();
 
-        this.debugger = new CannonDebugger(this.scene, this.instance);
+        // this.debugger = new CannonDebugger(this.scene, this.instance);
     }
 
     initInstance() {
@@ -38,6 +38,6 @@ export default class PhysicsWorld {
 
     update() {
         this.instance.fixedStep();
-        this.debugger.update();
+        // this.debugger.update();
     }
 }

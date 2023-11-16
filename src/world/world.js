@@ -23,6 +23,7 @@ export default class World {
         this.debug = this.experience.debug;
         this.time = this.experience.time;
         this.camera = this.experience.camera;
+        this.firstPersonControls = this.experience.firstPersonControls;
 
         this.resources.on("ready", () => {
             // this.initPhysics();
@@ -77,7 +78,7 @@ export default class World {
                 depthWrite: false,
             })
         );
-        this.crosshair.scale.set(1, 1, 1);
+        this.crosshair.scale.set(0.2, 0.2, 0.2);
         this.crosshair.position.set(0, 0, -10);
 
         this.scene.add(this.crosshair);
@@ -647,24 +648,17 @@ export default class World {
                 }
             });
         }
-        // if (this.physicsWorld) {
-        //     this.physicsWorldDebugger.update();
-
-        //     this.obstacles.forEach((obstacle) => {
-        //         if (obstacle.update) {
-        //             obstacle.update();
-        //         }
-        //     });
-        // }
     }
 
     updateCrosshair() {
+        console.log(this.camera.instance.position);
         const target = new THREE.Vector3(0, 0, -12)
-            .applyQuaternion(this.camera.instance.quaternion)
-            .add(this.camera.instance.position);
+            .applyQuaternion(this.firstPersonControls.quaternion)
+            // .applyQuaternion(this.firstPersonControls.yawObject.quaternion)
+            .add(this.firstPersonControls.yawObject.position);
 
-        this.crosshair.position.x = target.x;
-        this.crosshair.position.y = target.y;
-        this.crosshair.position.z = target.z;
+        // this.crosshair.position.x = target.x;
+        // this.crosshair.position.y = target.y;
+        // this.crosshair.position.z = target.z;
     }
 }

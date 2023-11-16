@@ -76,7 +76,6 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         if (!this.inputHandler.lockPointer) {
             return;
         }
-        console.log(this.inputHandler.lockPointer);
 
         if (this.inputHandler.lockPointer !== this.lockPointer) {
             this.lockPointer = this.inputHandler.lockPointer;

@@ -651,7 +651,6 @@ export default class World {
     }
 
     updateCrosshair() {
-        console.log(this.camera.instance.position);
         const target = new THREE.Vector3(0, 0, -12)
             .applyQuaternion(this.firstPersonControls.quaternion)
             // .applyQuaternion(this.firstPersonControls.yawObject.quaternion)

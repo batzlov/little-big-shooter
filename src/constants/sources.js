@@ -2,7 +2,7 @@ export default [
     {
         name: "crosshairTexture",
         type: "texture",
-        path: "crosshair-2.png",
+        path: "crosshair.png",
     },
     {
         name: "treeModel",

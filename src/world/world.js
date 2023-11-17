@@ -79,7 +79,7 @@ export default class World {
                 depthWrite: false,
             })
         );
-        this.crosshair.scale.set(0.1, 0.1, 0.1);
+        this.crosshair.scale.set(0.25, 0.25, 0.25);
         // this.crosshair.position.set(0, 0, -10);
 
         this.scene.add(this.crosshair);
@@ -666,12 +666,14 @@ export default class World {
             ray.direction.multiplyScalar(distanceFromCamera)
         );
 
-        gsap.to(this.crosshair.position, {
-            x: target.x,
-            y: target.y,
-            z: target.z,
-            duration: 0.5,
-        });
+        this.crosshair.position.lerp(target, 0.3);
+
+        // gsap.to(this.crosshair.position, {
+        //     x: target.x,
+        //     y: target.y,
+        //     z: target.z,
+        //     duration: 0.5,
+        // });
 
         // this.crosshair.position.x = target.x;
         // this.crosshair.position.y = target.y;

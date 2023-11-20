@@ -1,20 +1,14 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+
 import Experience from "../core/experience";
 
-export default class Tree {
+export default class Bullet {
     constructor(position = { x: 0, y: 0, z: 0 }) {
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
-        this.models = [
-            this.resources.items.treeModel,
-            this.resources.items.treeModel2,
-            this.resources.items.treeModel3,
-            this.resources.items.treeModel4,
-        ];
-        this.resource =
-            this.models[Math.floor(Math.random() * this.models.length)];
+        this.resource = this.resources.items.bulletModel;
         this.position = position;
         this.physicsWorld = this.experience.physicsWorld;
 
@@ -23,12 +17,6 @@ export default class Tree {
     }
 
     initModel() {
-        const reasonableScaleRange = [0.004, 0.006];
-        const randomScale = THREE.MathUtils.randFloat(
-            reasonableScaleRange[0],
-            reasonableScaleRange[1]
-        );
-
         // clone model
         this.model = this.resource.scene.clone();
         this.model.position.set(
@@ -40,7 +28,16 @@ export default class Tree {
     }
 
     initPhysics() {
-        this.shape = new CANNON.Box(new CANNON.Vec3(0.3, 2.5, 0.3));
+        const modelBox = new THREE.Box3().setFromObject(this.resource.scene);
+        const modelBoxSize = modelBox.getSize(new THREE.Vector3());
+
+        this.shape = new CANNON.Box(
+            new CANNON.Vec3(
+                modelBoxSize.x / 2,
+                modelBoxSize.y / 2,
+                modelBoxSize.z / 2
+            )
+        );
         this.body = new CANNON.Body({
             mass: 500,
             position: new CANNON.Vec3(
@@ -56,5 +53,8 @@ export default class Tree {
         this.physicsWorld.instance.addBody(this.body);
     }
 
-    update() {}
+    update() {
+        this.model.position.copy(this.body.position);
+        this.model.quaternion.copy(this.body.quaternion);
+    }
 }

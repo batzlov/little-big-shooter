@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
-
 import Experience from "../core/experience";
 
 export default class Player {
@@ -10,12 +9,16 @@ export default class Player {
         this.resources = this.experience.resources;
         this.resource = this.resources.items.ak47Model;
         this.world = this.experience.world;
+        this.inputHandler = this.experience.inputHandler;
         this.physicsWorld = this.experience.physicsWorld;
         this.firstPersonControls = this.experience.firstPersonControls;
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
         this.debug = this.experience.debug;
+
+        this.bulletBodys = [];
+        this.bulletMeshes = [];
 
         this.debugObject = {
             offsetX: 0,
@@ -113,7 +116,71 @@ export default class Player {
         };
     }
 
-    update() {}
+    getShootDirection() {
+        const vector = new THREE.Vector3(0, 0, 1);
+        vector.unproject(this.camera.instance);
+        const ray = new THREE.Ray(
+            this.camera.body.position,
+            vector.sub(this.camera.body.position).normalize()
+        );
+
+        return ray.direction;
+    }
+
+    shootBullet() {
+        const shootDirection = this.getShootDirection();
+        const bulletBody = new CANNON.Body({
+            mass: 1,
+            shape: new CANNON.Sphere(0.05),
+        });
+        const bulletMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.05, 8, 8),
+            new THREE.MeshBasicMaterial({ color: 0xffffff })
+        );
+
+        this.physicsWorld.instance.addBody(bulletBody);
+        this.bulletBodys.push(bulletBody);
+
+        this.scene.add(bulletMesh);
+        this.bulletMeshes.push(bulletMesh);
+
+        const x =
+            this.camera.body.position.x +
+            shootDirection.x *
+                (this.camera.body.shapes[0].radius * 1.02 +
+                    bulletBody.shapes[0].radius);
+        const y =
+            this.camera.body.position.y +
+            shootDirection.y *
+                (this.camera.body.shapes[0].radius * 1.02 +
+                    bulletBody.shapes[0].radius);
+        const z =
+            this.camera.body.position.z +
+            shootDirection.z *
+                (this.camera.body.shapes[0].radius * 1.02 +
+                    bulletBody.shapes[0].radius);
+
+        bulletBody.position.x = x;
+        bulletBody.position.y = y;
+        bulletBody.position.z = z;
+
+        bulletBody.velocity.set(
+            shootDirection.x * 50,
+            shootDirection.y * 50,
+            shootDirection.z * 50
+        );
+    }
+
+    update() {
+        if (this.inputHandler.mouseKeysPressed.left) {
+            this.shootBullet();
+        }
+
+        this.bulletMeshes.forEach((bulletMesh, index) => {
+            bulletMesh.position.copy(this.bulletBodys[index].position);
+            bulletMesh.quaternion.copy(this.bulletBodys[index].quaternion);
+        });
+    }
 
     hideModelPart(name) {
         this.model.traverse((child) => {

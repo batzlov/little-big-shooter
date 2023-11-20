@@ -74,7 +74,6 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         const weaponModel = await this.resources.gltfLoaderAsync(
             "models/toon-shooter-game-kit/ak47.glb"
         );
-        console.log(weaponModel.scene);
         weaponModel.scene.rotation.y += 1.5 * Math.PI;
 
         weaponModel.scene.position.x = 0.25;

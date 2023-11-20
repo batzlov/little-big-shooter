@@ -59,4 +59,9 @@ export default [
         type: "gltf",
         path: "models/toon-shooter-game-kit/ak47.glb",
     },
+    {
+        name: "bulletModel",
+        type: "gltf",
+        path: "models/bullet.glb",
+    },
 ];

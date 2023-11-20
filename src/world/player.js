@@ -50,6 +50,10 @@ export default class Player {
         // input handling
         this.keysPressed = this.experience.inputHandler.keysPressed;
         this.mouseKeysPressed = this.experience.inputHandler.mouseKeysPressed;
+
+        this.inputHandler.on("shoot", () => {
+            this.shootBullet();
+        });
     }
 
     initAnimations() {
@@ -134,7 +138,7 @@ export default class Player {
             shape: new CANNON.Sphere(0.05),
         });
         const bulletMesh = new THREE.Mesh(
-            new THREE.SphereGeometry(0.05, 8, 8),
+            new THREE.SphereGeometry(0.01, 8, 8),
             new THREE.MeshBasicMaterial({ color: 0xffffff })
         );
 
@@ -165,14 +169,19 @@ export default class Player {
         bulletBody.position.z = z;
 
         bulletBody.velocity.set(
-            shootDirection.x * 50,
-            shootDirection.y * 50,
-            shootDirection.z * 50
+            shootDirection.x * 100,
+            shootDirection.y * 100,
+            shootDirection.z * 100
         );
     }
 
     update() {
-        if (this.inputHandler.mouseKeysPressed.left) {
+        if (
+            this.inputHandler.mouseKeysPressed.left &&
+            this.inputHandler.mouseKeysPressed.leftPressedClock.getElapsedTime() >
+                0.1 &&
+            this.time.delta >= 17
+        ) {
             this.shootBullet();
         }
 

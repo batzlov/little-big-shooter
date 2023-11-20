@@ -1,7 +1,11 @@
+import * as THREE from "three";
 import Experience from "./experience";
+import EventEmitter from "../utils/event-emitter.js";
 
-export default class InputHandler {
+export default class InputHandler extends EventEmitter {
     constructor() {
+        super();
+
         this.experience = new Experience();
         this.canvas = this.experience.canvas;
 
@@ -12,6 +16,9 @@ export default class InputHandler {
         this.currentMouseState = {
             left: false,
             right: false,
+            leftPressedSince: null,
+            leftPressedClock: null,
+            rightPressedSince: null,
             mouseXDelta: 0,
             mouseYDelta: 0,
             mouseX: 0,
@@ -135,7 +142,15 @@ export default class InputHandler {
 
     onMouseDown(event) {
         // TODO: add event handling for mouse events
+        if (event.buttons === 1) {
+            this.emit("shoot");
+        }
+
         this.mouseKeysPressed.left = event.buttons === 1;
+        this.mouseKeysPressed.leftPressedSince = new Date().getTime();
+        this.mouseKeysPressed.leftPressedClock = new THREE.Clock();
+        this.mouseKeysPressed.leftPressedClock.start();
+
         this.mouseKeysPressed.right = event.buttons === 2;
 
         this.currentMouseState.left = event.buttons === 1;
@@ -145,6 +160,8 @@ export default class InputHandler {
     onMouseUp(event) {
         // TODO: add event handling for mouse events
         delete this.mouseKeysPressed.left;
+        this.mouseKeysPressed.leftPressedSince = null;
+
         delete this.mouseKeysPressed.right;
 
         this.currentMouseState.left = false;

@@ -35,6 +35,17 @@ export default class Resources extends EventEmitter {
         });
     }
 
+    gltfLoaderAsync(path) {
+        return new Promise((resolve, reject) => {
+            this.loaders.gltfLoader.load(
+                path,
+                (data) => resolve(data),
+                null,
+                (error) => reject(error)
+            );
+        });
+    }
+
     startLoading() {
         // if there are no sources, skip loading
         if (this.finishedLoading()) {

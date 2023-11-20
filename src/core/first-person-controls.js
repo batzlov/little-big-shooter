@@ -35,7 +35,8 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.inputVelocity = new THREE.Vector3();
         this.euler = new THREE.Euler();
 
-        this.initCrossahair();
+        this.initCrosshair();
+        this.initWeapon();
         this.initHandleJumping();
 
         this.lockEvent = { type: "lock" };
@@ -48,7 +49,7 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         document.addEventListener("pointerlockerror", this.onPointerlockError);
     }
 
-    async initCrossahair() {
+    async initCrosshair() {
         const crosshairTexture = await this.resources.textureLoaderAsync(
             "crosshair.png"
         );
@@ -67,6 +68,21 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.crosshair.scale.set(0.5, 0.5, 0.5);
 
         this.scene.add(this.crosshair);
+    }
+
+    async initWeapon() {
+        const weaponModel = await this.resources.gltfLoaderAsync(
+            "models/toon-shooter-game-kit/ak47.glb"
+        );
+        console.log(weaponModel.scene);
+        weaponModel.scene.rotation.y += 1.5 * Math.PI;
+
+        weaponModel.scene.position.x = 0.25;
+        weaponModel.scene.position.y -= 0.5;
+        weaponModel.scene.position.z = -0.5;
+
+        this.scene.add(weaponModel.scene);
+        this.pitchObject.add(weaponModel.scene);
     }
 
     initHandleJumping() {

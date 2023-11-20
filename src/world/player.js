@@ -8,9 +8,10 @@ export default class Player {
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
-        this.resource = this.resources.items.characterSoldierModel;
+        this.resource = this.resources.items.ak47Model;
         this.world = this.experience.world;
         this.physicsWorld = this.experience.physicsWorld;
+        this.firstPersonControls = this.experience.firstPersonControls;
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
@@ -46,57 +47,6 @@ export default class Player {
         // input handling
         this.keysPressed = this.experience.inputHandler.keysPressed;
         this.mouseKeysPressed = this.experience.inputHandler.mouseKeysPressed;
-
-        // TODO: implement player movement
-        this.walkDirection = new THREE.Vector3(0, 0, 0);
-        this.rotateAngle = new THREE.Vector3(0, 1, 0);
-        this.rotateQuaternion = new THREE.Quaternion();
-        this.cameraTarget = new THREE.Vector3();
-        this.fadeDuration = 0.2;
-        this.velocity = 5;
-
-        // this.initModel();
-        // this.initPhysics();
-        // this.initAnimations();
-    }
-
-    initModel() {
-        this.model = this.resource.scene;
-        this.model.position.y = 0.01;
-        // this.model.position.y = 10;
-        this.model.rotation.y = Math.PI;
-        this.scene.add(this.model);
-
-        // hide weapons that are initially visible
-        this.hideModelPart("Revolver");
-        this.hideModelPart("Revolver_Small");
-        this.hideModelPart("Sniper");
-        this.hideModelPart("Sniper_2");
-        this.hideModelPart("Shotgun");
-        this.hideModelPart("ShortCannon");
-        this.hideModelPart("SMG");
-        this.hideModelPart("Pistol");
-        this.hideModelPart("GrenadeLauncher");
-        this.hideModelPart("Shovel");
-        this.hideModelPart("Knife_1");
-        this.hideModelPart("Knife_2");
-        this.hideModelPart("RocketLauncher");
-
-        // hide character parts that disturbs the camera view
-        this.hideModelPart("Head_2");
-        this.hideModelPart("Head_3");
-        this.hideModelPart("Head_4");
-    }
-
-    initPhysics() {
-        this.shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
-        this.body = new CANNON.Body({
-            mass: 1,
-            position: new CANNON.Vec3(0, 0, 0),
-            shape: this.shape,
-        });
-
-        this.physicsWorld.instance.addBody(this.body);
     }
 
     initAnimations() {
@@ -163,43 +113,7 @@ export default class Player {
         };
     }
 
-    update() {
-        // this.model.position.copy(this.camera.body.position);
-        // // this.body.position.copy(this.camera.body.position);
-        // const handleRotationOfPlayer = () => {
-        //     // player offset
-        //     this.model.position.y = this.debugObject.offsetY;
-        //     this.model.position.z += this.debugObject.offsetZ;
-        //     this.model.rotation.y = this.camera.instance.rotation.y + Math.PI;
-        // };
-        // handleRotationOfPlayer();
-        // const directions = ["w", "a", "s", "d"];
-        // const directionIsPressed = directions.some(
-        //     (key) => this.keysPressed[key] == true
-        // );
-        // // set the right animation
-        // if (
-        //     this.mouseKeysPressed.left &&
-        //     this.animation.actions.current !== this.animation.actions.idleShoot
-        // ) {
-        //     this.animation.play("idleShoot");
-        // } else if (
-        //     directionIsPressed &&
-        //     Object.keys(this.mouseKeysPressed).length === 0 &&
-        //     this.animation.actions.current !== this.animation.actions.run
-        // ) {
-        //     this.animation.play("run");
-        // } else if (
-        //     !directionIsPressed &&
-        //     Object.keys(this.mouseKeysPressed).length === 0 &&
-        //     this.animation.actions.current !== this.animation.actions.idle
-        // ) {
-        //     this.animation.play("idle");
-        // }
-        // this.animation.mixer.update(this.time.delta * 0.001);
-        // copy physics
-        // this.body.position.copy(this.model.position);
-    }
+    update() {}
 
     hideModelPart(name) {
         this.model.traverse((child) => {

@@ -54,4 +54,9 @@ export default [
         type: "gltf",
         path: "models/toon-shooter-game-kit/metal-fence.glb",
     },
+    {
+        name: "ak47Model",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/ak47.glb",
+    },
 ];

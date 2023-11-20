@@ -49,8 +49,8 @@ export default class Experience {
             this.camera.instance,
             this.camera.body
         );
-        this.world = new World();
         this.scene.add(this.firstPersonControls.getObject());
+        this.world = new World();
     }
 
     initEvents() {

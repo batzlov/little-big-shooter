@@ -11,6 +11,7 @@ export default class Bullet {
         this.resource = this.resources.items.bulletModel;
         this.position = position;
         this.physicsWorld = this.experience.physicsWorld;
+        this.shootAt = new Date();
 
         this.initModel();
         this.initPhysics();
@@ -24,33 +25,35 @@ export default class Bullet {
             this.position.y,
             this.position.z
         );
+        this.model.scale.set(0.01, 0.01, 0.01);
         this.scene.add(this.model);
     }
 
     initPhysics() {
-        const modelBox = new THREE.Box3().setFromObject(this.resource.scene);
-        const modelBoxSize = modelBox.getSize(new THREE.Vector3());
-
-        this.shape = new CANNON.Box(
-            new CANNON.Vec3(
-                modelBoxSize.x / 2,
-                modelBoxSize.y / 2,
-                modelBoxSize.z / 2
-            )
-        );
         this.body = new CANNON.Body({
-            mass: 500,
-            position: new CANNON.Vec3(
-                this.position.x,
-                this.position.y + 2.5,
-                this.position.z
-            ),
-            shape: this.shape,
+            mass: 1,
+            shape: new CANNON.Sphere(0.05),
             linearDamping: 0.01,
             angularDamping: 0.01,
         });
 
         this.physicsWorld.instance.addBody(this.body);
+    }
+
+    setPosition(position) {
+        this.body.position.copy(position);
+        this.model.position.copy(position);
+    }
+
+    updatePosition(position) {
+        this.body.position.copy(position);
+        this.model.position.copy(position);
+    }
+
+    updateRotation(rotation) {
+        this.model.rotation.x += rotation.x;
+        this.model.rotation.y += rotation.y;
+        this.model.rotation.y += 0.5 * Math.PI;
     }
 
     update() {

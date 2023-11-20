@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+
 import Experience from "../core/experience";
+import Bullet from "./bullet";
 
 export default class Player {
     constructor() {
@@ -17,6 +19,7 @@ export default class Player {
         this.camera = this.experience.camera;
         this.debug = this.experience.debug;
 
+        this.bullets = [];
         this.bulletBodys = [];
         this.bulletMeshes = [];
 
@@ -131,7 +134,7 @@ export default class Player {
         return ray.direction;
     }
 
-    shootBullet() {
+    shootBulletLegacy() {
         const shootDirection = this.getShootDirection();
         const bulletBody = new CANNON.Body({
             mass: 1,
@@ -175,6 +178,43 @@ export default class Player {
         );
     }
 
+    shootBullet() {
+        const bullet = new Bullet();
+        const shootDirection = this.getShootDirection();
+
+        const x =
+            this.camera.body.position.x +
+            shootDirection.x *
+                (this.camera.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius);
+        const y =
+            this.camera.body.position.y +
+            shootDirection.y *
+                (this.camera.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius);
+
+        const z =
+            this.camera.body.position.z +
+            shootDirection.z *
+                (this.camera.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius);
+
+        const bulletPosition = new THREE.Vector3(x, y, z);
+        bullet.updatePosition(bulletPosition);
+        bullet.updateRotation({
+            x: this.firstPersonControls.pitchObject.rotation.x,
+            y: this.firstPersonControls.yawObject.rotation.y,
+        });
+
+        this.bullets.push(bullet);
+
+        bullet.body.velocity.set(
+            shootDirection.x * 100,
+            shootDirection.y * 100,
+            shootDirection.z * 100
+        );
+    }
+
     update() {
         if (
             this.inputHandler.mouseKeysPressed.left &&
@@ -185,9 +225,13 @@ export default class Player {
             this.shootBullet();
         }
 
-        this.bulletMeshes.forEach((bulletMesh, index) => {
-            bulletMesh.position.copy(this.bulletBodys[index].position);
-            bulletMesh.quaternion.copy(this.bulletBodys[index].quaternion);
+        // this.bulletMeshes.forEach((bulletMesh, index) => {
+        //     bulletMesh.position.copy(this.bulletBodys[index].position);
+        //     bulletMesh.quaternion.copy(this.bulletBodys[index].quaternion);
+        // });
+
+        this.bullets.forEach((bullet) => {
+            bullet.update();
         });
     }
 

@@ -30,6 +30,11 @@ export default class Experience {
 
         this.canvas = canvas;
 
+        this.init();
+        this.initEvents();
+    }
+
+    init() {
         this.debug = new Debug();
         this.sizes = new Sizes();
         this.time = new Time();
@@ -46,8 +51,6 @@ export default class Experience {
         );
         this.world = new World();
         this.scene.add(this.firstPersonControls.getObject());
-
-        this.initEvents();
     }
 
     initEvents() {

@@ -11,6 +11,9 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.playerBody = playerBody;
 
         this.experience = new Experience();
+        this.resources = this.experience.resources;
+        this.renderer = this.experience.renderer;
+        this.scene = this.experience.scene;
         this.inputHandler = this.experience.inputHandler;
 
         this.mouseEnabled = true;
@@ -32,6 +35,7 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.inputVelocity = new THREE.Vector3();
         this.euler = new THREE.Euler();
 
+        this.initCrossahair();
         this.initHandleJumping();
 
         this.lockEvent = { type: "lock" };
@@ -42,6 +46,27 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
             this.onPointerlockChange
         );
         document.addEventListener("pointerlockerror", this.onPointerlockError);
+    }
+
+    async initCrossahair() {
+        const crosshairTexture = await this.resources.textureLoaderAsync(
+            "crosshair.png"
+        );
+        crosshairTexture.anisotropy =
+            this.renderer.instance.capabilities.getMaxAnisotropy();
+
+        this.crosshair = new THREE.Sprite(
+            new THREE.SpriteMaterial({
+                map: crosshairTexture,
+                color: 0xffffff,
+                fog: false,
+                depthTest: false,
+                depthWrite: false,
+            })
+        );
+        this.crosshair.scale.set(0.5, 0.5, 0.5);
+
+        this.scene.add(this.crosshair);
     }
 
     initHandleJumping() {
@@ -127,6 +152,8 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.velocity.z += this.inputVelocity.z;
 
         this.yawObject.position.copy(this.playerBody.position);
+
+        this.updateCrosshair();
     }
 
     updateRotation() {
@@ -143,6 +170,17 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
             -Math.PI / 2,
             Math.min(Math.PI / 2, this.pitchObject.rotation.x)
         );
+    }
+
+    updateCrosshair() {
+        const target = new THREE.Vector3(0, 0, -12)
+            .applyQuaternion(this.pitchObject.quaternion)
+            .applyQuaternion(this.yawObject.quaternion)
+            .add(this.playerBody.position);
+
+        this.crosshair.position.x = target.x;
+        this.crosshair.position.y = target.y;
+        this.crosshair.position.z = target.z;
     }
 
     // TODO: not the right place

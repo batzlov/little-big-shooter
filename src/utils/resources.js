@@ -18,9 +18,21 @@ export default class Resources extends EventEmitter {
 
     initLoaders() {
         this.loaders = {};
+
         this.loaders.gltfLoader = new GLTFLoader();
         this.loaders.textureLoader = new THREE.TextureLoader();
         this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
+    }
+
+    textureLoaderAsync(path) {
+        return new Promise((resolve, reject) => {
+            this.loaders.textureLoader.load(
+                path,
+                (data) => resolve(data),
+                null,
+                (error) => reject(error)
+            );
+        });
     }
 
     startLoading() {

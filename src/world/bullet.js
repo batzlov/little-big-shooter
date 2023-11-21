@@ -28,7 +28,9 @@ export default class Bullet {
             this.position.z
         );
         this.model.rotation.y += Math.PI;
-        this.model.scale.set(0.05, 0.05, 0.05);
+
+        const scale = 0.03;
+        this.model.scale.set(scale, scale, scale);
         this.scene.add(this.model);
     }
 

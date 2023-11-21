@@ -17,6 +17,7 @@ export default class Player {
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
         this.debug = this.experience.debug;
+        this.bulletRotation = new THREE.Euler();
 
         this.bullets = [];
         this.bulletBodys = [];
@@ -226,6 +227,9 @@ export default class Player {
         const bullet = new Bullet();
         const shootDirection = this.getShootDirection();
 
+        // FIXME: doesnt work as supposed
+        bullet.model.quaternion.setFromEuler(this.bulletRotation);
+
         const x =
             this.body.position.x +
             shootDirection.x *
@@ -235,7 +239,8 @@ export default class Player {
             this.body.position.y +
             shootDirection.y *
                 (this.body.shapes[0].radius * 1.02 +
-                    bullet.body.shapes[0].radius);
+                    bullet.body.shapes[0].radius) +
+            (this.camera.instance.position.y - 0.2);
 
         const z =
             this.body.position.z +
@@ -265,9 +270,13 @@ export default class Player {
             this.shootBullet();
         }
 
-        this.bullets.forEach((bullet) => {
-            bullet.update();
-        });
+        for (let i = 0; i < this.bullets.length; i++) {
+            if (this.bullets[i].destroyed) {
+                this.bullets.splice(i, 1);
+            } else {
+                this.bullets[i].update();
+            }
+        }
 
         const directions = ["w", "a", "s", "d"];
         const directionIsPressed = directions.some(

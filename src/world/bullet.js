@@ -11,7 +11,9 @@ export default class Bullet {
         this.resource = this.resources.items.bulletModel;
         this.position = position;
         this.physicsWorld = this.experience.physicsWorld;
-        this.shootAt = new Date();
+        this.shotAt = new Date();
+        this.destroyed = false;
+        this.destroyBulletAfter = 4000; // ms
 
         this.initModel();
         this.initPhysics();
@@ -25,6 +27,7 @@ export default class Bullet {
             this.position.y,
             this.position.z
         );
+        this.model.rotation.y += Math.PI;
         this.model.scale.set(0.05, 0.05, 0.05);
         this.scene.add(this.model);
     }
@@ -59,5 +62,15 @@ export default class Bullet {
     update() {
         this.model.position.copy(this.body.position);
         this.model.quaternion.copy(this.body.quaternion);
+
+        if (new Date() - this.shotAt > this.destroyBulletAfter) {
+            this.destroy();
+        }
+    }
+
+    destroy() {
+        this.destroyed = true;
+        this.scene.remove(this.model);
+        this.physicsWorld.instance.removeBody(this.body);
     }
 }

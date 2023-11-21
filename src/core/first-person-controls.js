@@ -199,6 +199,9 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
             -Math.PI / 2,
             Math.min(Math.PI / 2, this.pitchObject.rotation.x)
         );
+
+        this.player.bulletRotation.y = this.yawObject.rotation.y;
+        this.player.bulletRotation.x = this.pitchObject.rotation.x;
     }
 
     updateCrosshair() {

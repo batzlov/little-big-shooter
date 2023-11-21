@@ -1,7 +1,11 @@
-import Experience from "../core/experience";
+import * as THREE from "three";
+import Experience from "./experience";
+import EventEmitter from "../utils/event-emitter.js";
 
-export default class InputHandler {
+export default class InputHandler extends EventEmitter {
     constructor() {
+        super();
+
         this.experience = new Experience();
         this.canvas = this.experience.canvas;
 
@@ -12,12 +16,29 @@ export default class InputHandler {
         this.currentMouseState = {
             left: false,
             right: false,
+            leftPressedSince: null,
+            leftPressedClock: null,
+            rightPressedSince: null,
             mouseXDelta: 0,
             mouseYDelta: 0,
             mouseX: 0,
             mouseY: 0,
         };
         this.previousMouseState = null;
+
+        this.movements = {
+            left: false,
+            right: false,
+            forward: false,
+            backward: false,
+            up: false,
+        };
+        this.mouseMovements = {
+            movementX: 0,
+            movementY: 0,
+        };
+
+        this.lockPointer = false;
 
         window.addEventListener("keydown", (event) => {
             this.onKeyDown(event);
@@ -46,15 +67,90 @@ export default class InputHandler {
 
     onKeyDown(event) {
         this.keysPressed[event.key.toLowerCase()] = true;
+
+        //
+        switch (event.code) {
+            case "KeyW":
+            case "ArrowUp":
+                this.movements.forward = true;
+                break;
+
+            case "KeyA":
+            case "ArrowLeft":
+                this.movements.left = true;
+                break;
+
+            case "KeyS":
+            case "ArrowDown":
+                this.movements.backward = true;
+                break;
+
+            case "KeyD":
+            case "ArrowRight":
+                this.movements.right = true;
+                break;
+
+            case "KeyF":
+                this.lockPointer = true;
+                this.toggleGameInstructions();
+                break;
+
+            case "Escape":
+                this.lockPointer = false;
+                this.toggleGameInstructions();
+                break;
+
+            case "Space":
+                this.movements.up = true;
+                break;
+        }
+    }
+
+    toggleGameInstructions() {
+        document.querySelector(".game-instructions").classList.toggle("hidden");
     }
 
     onKeyUp(event) {
         delete this.keysPressed[event.key.toLowerCase()];
+
+        switch (event.code) {
+            case "KeyW":
+            case "ArrowUp":
+                this.movements.forward = false;
+                break;
+
+            case "KeyA":
+            case "ArrowLeft":
+                this.movements.left = false;
+                break;
+
+            case "KeyS":
+            case "ArrowDown":
+                this.movements.backward = false;
+                break;
+
+            case "KeyD":
+            case "ArrowRight":
+                this.movements.right = false;
+                break;
+
+            case "Space":
+                this.movements.up = false;
+                break;
+        }
     }
 
     onMouseDown(event) {
         // TODO: add event handling for mouse events
+        if (event.buttons === 1) {
+            this.emit("shoot");
+        }
+
         this.mouseKeysPressed.left = event.buttons === 1;
+        this.mouseKeysPressed.leftPressedSince = new Date().getTime();
+        this.mouseKeysPressed.leftPressedClock = new THREE.Clock();
+        this.mouseKeysPressed.leftPressedClock.start();
+
         this.mouseKeysPressed.right = event.buttons === 2;
 
         this.currentMouseState.left = event.buttons === 1;
@@ -64,6 +160,8 @@ export default class InputHandler {
     onMouseUp(event) {
         // TODO: add event handling for mouse events
         delete this.mouseKeysPressed.left;
+        delete this.mouseKeysPressed.leftPressedSince;
+        delete this.mouseKeysPressed.leftPressedClock;
         delete this.mouseKeysPressed.right;
 
         this.currentMouseState.left = false;
@@ -84,6 +182,10 @@ export default class InputHandler {
             this.currentMouseState.mouseX - this.previousMouseState.mouseX;
         this.currentMouseState.mouseYDelta =
             this.currentMouseState.mouseY - this.previousMouseState.mouseY;
+
+        //
+        this.mouseMovements.movementX = event.movementX;
+        this.mouseMovements.movementY = event.movementY;
     }
 
     onDblClick() {

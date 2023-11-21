@@ -2,6 +2,7 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 
 import Experience from "../core/experience";
+import Bullet from "./bullet";
 
 export default class Player {
     constructor() {
@@ -10,11 +11,17 @@ export default class Player {
         this.resources = this.experience.resources;
         this.resource = this.resources.items.characterSoldierModel;
         this.world = this.experience.world;
+        this.inputHandler = this.experience.inputHandler;
         this.physicsWorld = this.experience.physicsWorld;
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
         this.debug = this.experience.debug;
+        this.bulletRotation = new THREE.Euler();
+
+        this.bullets = [];
+        this.bulletBodys = [];
+        this.bulletMeshes = [];
 
         this.debugObject = {
             offsetX: 0,
@@ -43,27 +50,22 @@ export default class Player {
                 .name("offsetZ");
         }
 
+        this.initPhysics();
+        this.initModel();
+        this.initAnimations();
+
         // input handling
         this.keysPressed = this.experience.inputHandler.keysPressed;
         this.mouseKeysPressed = this.experience.inputHandler.mouseKeysPressed;
 
-        // TODO: implement player movement
-        this.walkDirection = new THREE.Vector3(0, 0, 0);
-        this.rotateAngle = new THREE.Vector3(0, 1, 0);
-        this.rotateQuaternion = new THREE.Quaternion();
-        this.cameraTarget = new THREE.Vector3();
-        this.fadeDuration = 0.2;
-        this.velocity = 5;
-
-        this.initModel();
-        // this.initPhysics();
-        this.initAnimations();
+        this.inputHandler.on("shoot", () => {
+            this.shootBullet();
+        });
     }
 
     initModel() {
         this.model = this.resource.scene;
         this.model.position.y = 0.01;
-        // this.model.position.y = 10;
         this.model.rotation.y = Math.PI;
         this.scene.add(this.model);
 
@@ -89,11 +91,14 @@ export default class Player {
     }
 
     initPhysics() {
-        this.shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
+        const radius = 1.0;
+        this.shape = new CANNON.Sphere(radius);
         this.body = new CANNON.Body({
-            mass: 1,
+            mass: 5,
             position: new CANNON.Vec3(0, 0, 0),
             shape: this.shape,
+            material: new CANNON.Material("physics"),
+            linearDamping: 0.9,
         });
 
         this.physicsWorld.instance.addBody(this.body);
@@ -163,23 +168,122 @@ export default class Player {
         };
     }
 
+    getShootDirection() {
+        const vector = new THREE.Vector3(0, 0, 1);
+        vector.unproject(this.camera.instance);
+        const ray = new THREE.Ray(
+            this.body.position,
+            vector.sub(this.body.position).normalize()
+        );
+
+        return ray.direction;
+    }
+
+    shootBulletLegacy() {
+        const shootDirection = this.getShootDirection();
+        const bulletBody = new CANNON.Body({
+            mass: 1,
+            shape: new CANNON.Sphere(0.05),
+        });
+        const bulletMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.01, 8, 8),
+            new THREE.MeshBasicMaterial({ color: 0xffffff })
+        );
+
+        this.physicsWorld.instance.addBody(bulletBody);
+        this.bulletBodys.push(bulletBody);
+
+        this.scene.add(bulletMesh);
+        this.bulletMeshes.push(bulletMesh);
+
+        const x =
+            this.body.position.x +
+            shootDirection.x *
+                (this.body.shapes[0].radius * 1.02 +
+                    bulletBody.shapes[0].radius);
+        const y =
+            this.body.position.y +
+            shootDirection.y *
+                (this.body.shapes[0].radius * 1.02 +
+                    bulletBody.shapes[0].radius);
+        const z =
+            this.body.position.z +
+            shootDirection.z *
+                (this.body.shapes[0].radius * 1.02 +
+                    bulletBody.shapes[0].radius);
+
+        bulletBody.position.x = x;
+        bulletBody.position.y = y;
+        bulletBody.position.z = z;
+
+        bulletBody.velocity.set(
+            shootDirection.x * 100,
+            shootDirection.y * 100,
+            shootDirection.z * 100
+        );
+    }
+
+    shootBullet() {
+        const bullet = new Bullet();
+        const shootDirection = this.getShootDirection();
+
+        // FIXME: doesnt work as supposed
+        bullet.model.quaternion.setFromEuler(this.bulletRotation);
+
+        const x =
+            this.body.position.x +
+            shootDirection.x *
+                (this.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius);
+        const y =
+            this.body.position.y +
+            shootDirection.y *
+                (this.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius) +
+            (this.camera.instance.position.y - 0.2);
+
+        const z =
+            this.body.position.z +
+            shootDirection.z *
+                (this.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius);
+
+        const bulletPosition = new THREE.Vector3(x, y, z);
+        bullet.updatePosition(bulletPosition);
+
+        this.bullets.push(bullet);
+
+        const shootVelocity = 400;
+        bullet.body.velocity.set(
+            shootDirection.x * shootVelocity,
+            shootDirection.y * shootVelocity,
+            shootDirection.z * shootVelocity
+        );
+    }
+
     update() {
-        this.model.position.copy(this.camera.body.position);
-        // this.body.position.copy(this.camera.body.position);
+        if (
+            this.inputHandler.mouseKeysPressed.left &&
+            this.inputHandler.mouseKeysPressed.leftPressedClock.getElapsedTime() >
+                0.1 &&
+            this.time.delta >= 17
+        ) {
+            this.shootBullet();
+        }
 
-        const handleRotationOfPlayer = () => {
-            // player offset
-            this.model.position.y = this.debugObject.offsetY;
-            this.model.position.z += this.debugObject.offsetZ;
-
-            this.model.rotation.y = this.camera.instance.rotation.y + Math.PI;
-        };
-        handleRotationOfPlayer();
+        for (let i = 0; i < this.bullets.length; i++) {
+            if (this.bullets[i].destroyed) {
+                this.bullets.splice(i, 1);
+            } else {
+                this.bullets[i].update();
+            }
+        }
 
         const directions = ["w", "a", "s", "d"];
         const directionIsPressed = directions.some(
             (key) => this.keysPressed[key] == true
         );
+
         // set the right animation
         if (
             this.mouseKeysPressed.left &&
@@ -201,9 +305,6 @@ export default class Player {
         }
 
         this.animation.mixer.update(this.time.delta * 0.001);
-
-        // copy physics
-        // this.body.position.copy(this.model.position);
     }
 
     hideModelPart(name) {

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import gsap from "gsap";
 import CannonDebugger from "cannon-es-debugger";
 import EventEmitter from "../utils/event-emitter.js";
 import Experience from "../core/experience.js";
@@ -23,13 +24,8 @@ export default class World {
         this.debug = this.experience.debug;
         this.time = this.experience.time;
         this.camera = this.experience.camera;
-
-        this.resources.on("ready", () => {
-            // this.initPhysics();
-            this.initWorld();
-
-            this.player = new Player();
-        });
+        this.firstPersonControls = this.experience.firstPersonControls;
+        this.initWorld();
     }
 
     initWorld() {
@@ -44,7 +40,6 @@ export default class World {
         );
 
         this.initSkybox();
-        this.initCrosshair();
         this.initWorldBoundaries();
         this.initTrees();
     }
@@ -61,26 +56,6 @@ export default class World {
     initSkybox() {
         // TODO: replace with cube texture in the future
         this.scene.background = new THREE.Color(colors.skyBlue);
-    }
-
-    initCrosshair() {
-        const crosshairTexture = this.resources.items.crosshairTexture;
-        crosshairTexture.anisotropy =
-            this.renderer.instance.capabilities.getMaxAnisotropy();
-
-        this.crosshair = new THREE.Sprite(
-            new THREE.SpriteMaterial({
-                map: crosshairTexture,
-                color: 0xffffff,
-                fog: false,
-                depthTest: false,
-                depthWrite: false,
-            })
-        );
-        this.crosshair.scale.set(1, 1, 1);
-        this.crosshair.position.set(0, 0, -10);
-
-        this.scene.add(this.crosshair);
     }
 
     initWorldBoundaries() {
@@ -632,14 +607,6 @@ export default class World {
     }
 
     update() {
-        if (this.player) {
-            this.player.update();
-        }
-
-        if (this.crosshair) {
-            this.updateCrosshair();
-        }
-
         if (this.obstacles) {
             this.obstacles.forEach((obstacle) => {
                 if (obstacle.update) {
@@ -647,24 +614,5 @@ export default class World {
                 }
             });
         }
-        // if (this.physicsWorld) {
-        //     this.physicsWorldDebugger.update();
-
-        //     this.obstacles.forEach((obstacle) => {
-        //         if (obstacle.update) {
-        //             obstacle.update();
-        //         }
-        //     });
-        // }
-    }
-
-    updateCrosshair() {
-        const target = new THREE.Vector3(0, 0, -12)
-            .applyQuaternion(this.camera.instance.quaternion)
-            .add(this.camera.instance.position);
-
-        this.crosshair.position.x = target.x;
-        this.crosshair.position.y = target.y;
-        this.crosshair.position.z = target.z;
     }
 }

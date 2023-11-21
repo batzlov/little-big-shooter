@@ -13,14 +13,33 @@ export default class Resources extends EventEmitter {
         this.loaded = 0;
 
         this.initLoaders();
-        this.startLoading();
     }
 
     initLoaders() {
         this.loaders = {};
+
         this.loaders.gltfLoader = new GLTFLoader();
         this.loaders.textureLoader = new THREE.TextureLoader();
         this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
+    }
+
+    loaderAsync(path, loader) {
+        return new Promise((resolve, reject) => {
+            loader.load(
+                path,
+                (data) => resolve(data),
+                null,
+                (error) => reject(error)
+            );
+        });
+    }
+
+    gltfLoaderAsync(path) {
+        return this.loaderAsync(path, this.loaders.gltfLoader);
+    }
+
+    textureLoaderAsync(path) {
+        return this.loaderAsync(path, this.loaders.textureLoader);
     }
 
     startLoading() {
@@ -54,6 +73,34 @@ export default class Resources extends EventEmitter {
             loader.load(source.path, (file) => {
                 this.sourceLoaded(source, file);
             });
+        }
+    }
+
+    async load() {
+        try {
+            for (const source of this.sources) {
+                let loader = null;
+
+                switch (source.type) {
+                    case "gltf":
+                        loader = this.loaders.gltfLoader;
+                        break;
+                    case "texture":
+                        loader = this.loaders.textureLoader;
+                        break;
+                    case "cubeTexture":
+                        loader = this.loaders.cubeTextureLoader;
+                        break;
+                    default:
+                        console.error("Unhandled source type...");
+                        break;
+                }
+
+                const file = await this.loaderAsync(source.path, loader);
+                this.items[source.name] = file;
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 

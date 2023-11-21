@@ -55,11 +55,5 @@ export default class ShippingContainerStructure {
         this.physicsWorld.instance.addBody(this.body);
     }
 
-    update() {
-        this.model.position.copy(this.body.position);
-        // FIXME: this is a hack to fix the model's position
-        this.model.position.y -= this.shape.halfExtents.y;
-
-        this.model.quaternion.copy(this.body.quaternion);
-    }
+    update() {}
 }

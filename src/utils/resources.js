@@ -13,7 +13,6 @@ export default class Resources extends EventEmitter {
         this.loaded = 0;
 
         this.initLoaders();
-        this.startLoading();
     }
 
     initLoaders() {
@@ -24,9 +23,9 @@ export default class Resources extends EventEmitter {
         this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
     }
 
-    textureLoaderAsync(path) {
+    loaderAsync(path, loader) {
         return new Promise((resolve, reject) => {
-            this.loaders.textureLoader.load(
+            loader.load(
                 path,
                 (data) => resolve(data),
                 null,
@@ -36,14 +35,11 @@ export default class Resources extends EventEmitter {
     }
 
     gltfLoaderAsync(path) {
-        return new Promise((resolve, reject) => {
-            this.loaders.gltfLoader.load(
-                path,
-                (data) => resolve(data),
-                null,
-                (error) => reject(error)
-            );
-        });
+        return this.loaderAsync(path, this.loaders.gltfLoader);
+    }
+
+    textureLoaderAsync(path) {
+        return this.loaderAsync(path, this.loaders.textureLoader);
     }
 
     startLoading() {
@@ -77,6 +73,34 @@ export default class Resources extends EventEmitter {
             loader.load(source.path, (file) => {
                 this.sourceLoaded(source, file);
             });
+        }
+    }
+
+    async load() {
+        try {
+            for (const source of this.sources) {
+                let loader = null;
+
+                switch (source.type) {
+                    case "gltf":
+                        loader = this.loaders.gltfLoader;
+                        break;
+                    case "texture":
+                        loader = this.loaders.textureLoader;
+                        break;
+                    case "cubeTexture":
+                        loader = this.loaders.cubeTextureLoader;
+                        break;
+                    default:
+                        console.error("Unhandled source type...");
+                        break;
+                }
+
+                const file = await this.loaderAsync(source.path, loader);
+                this.items[source.name] = file;
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 

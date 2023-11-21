@@ -25,7 +25,7 @@ export default class Bullet {
             this.position.y,
             this.position.z
         );
-        this.model.scale.set(0.01, 0.01, 0.01);
+        this.model.scale.set(0.05, 0.05, 0.05);
         this.scene.add(this.model);
     }
 

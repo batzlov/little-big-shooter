@@ -25,13 +25,7 @@ export default class World {
         this.time = this.experience.time;
         this.camera = this.experience.camera;
         this.firstPersonControls = this.experience.firstPersonControls;
-
-        this.resources.on("ready", () => {
-            // this.initPhysics();
-            this.initWorld();
-
-            this.player = new Player();
-        });
+        this.initWorld();
     }
 
     initWorld() {
@@ -613,10 +607,6 @@ export default class World {
     }
 
     update() {
-        if (this.player) {
-            this.player.update();
-        }
-
         if (this.obstacles) {
             this.obstacles.forEach((obstacle) => {
                 if (obstacle.update) {

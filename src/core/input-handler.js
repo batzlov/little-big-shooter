@@ -160,8 +160,8 @@ export default class InputHandler extends EventEmitter {
     onMouseUp(event) {
         // TODO: add event handling for mouse events
         delete this.mouseKeysPressed.left;
-        this.mouseKeysPressed.leftPressedSince = null;
-
+        delete this.mouseKeysPressed.leftPressedSince;
+        delete this.mouseKeysPressed.leftPressedClock;
         delete this.mouseKeysPressed.right;
 
         this.currentMouseState.left = false;

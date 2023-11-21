@@ -4,11 +4,12 @@ import * as CANNON from "cannon-es";
 import Experience from "./experience";
 
 export default class FirstPersonControls extends THREE.EventDispatcher {
-    constructor(camera, playerBody) {
+    constructor(camera, player) {
         super();
 
         this.camera = camera;
-        this.playerBody = playerBody;
+        this.player = player;
+        this.playerBody = player.body;
 
         this.experience = new Experience();
         this.resources = this.experience.resources;
@@ -36,7 +37,8 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.euler = new THREE.Euler();
 
         this.initCrosshair();
-        this.initWeapon();
+        this.initPlayer();
+        // this.initWeapon();
         this.initHandleJumping();
 
         this.lockEvent = { type: "lock" };
@@ -68,6 +70,11 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.crosshair.scale.set(0.5, 0.5, 0.5);
 
         this.scene.add(this.crosshair);
+    }
+
+    initPlayer() {
+        this.player.model.position.y = 0;
+        this.pitchObject.add(this.player.model);
     }
 
     async initWeapon() {
@@ -167,6 +174,13 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.velocity.z += this.inputVelocity.z;
 
         this.yawObject.position.copy(this.playerBody.position);
+
+        // FIXME: update model position when moving, so we dont have glitching
+        if (forward || backward || left || right) {
+            this.pitchObject.children[0].position.y = 1.6;
+        } else {
+            this.pitchObject.children[0].position.y = 1.4;
+        }
 
         this.updateCrosshair();
     }

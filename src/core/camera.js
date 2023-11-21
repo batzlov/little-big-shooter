@@ -52,9 +52,7 @@ export default class Camera {
         }
 
         this.initInstance();
-        this.initPhysics();
-        // this.initControls();
-        // this.initControls();
+        // this.initPhysics();
     }
 
     initInstance() {
@@ -64,6 +62,8 @@ export default class Camera {
             0.1,
             1000
         );
+
+        this.instance.position.y = 1.4;
 
         this.scene.add(this.instance);
     }

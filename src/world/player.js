@@ -9,11 +9,10 @@ export default class Player {
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
-        this.resource = this.resources.items.ak47Model;
+        this.resource = this.resources.items.characterSoldierModel;
         this.world = this.experience.world;
         this.inputHandler = this.experience.inputHandler;
         this.physicsWorld = this.experience.physicsWorld;
-        this.firstPersonControls = this.experience.firstPersonControls;
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
@@ -50,6 +49,10 @@ export default class Player {
                 .name("offsetZ");
         }
 
+        this.initPhysics();
+        this.initModel();
+        this.initAnimations();
+
         // input handling
         this.keysPressed = this.experience.inputHandler.keysPressed;
         this.mouseKeysPressed = this.experience.inputHandler.mouseKeysPressed;
@@ -57,6 +60,47 @@ export default class Player {
         this.inputHandler.on("shoot", () => {
             this.shootBullet();
         });
+    }
+
+    initModel() {
+        this.model = this.resource.scene;
+        this.model.position.y = 0.01;
+        this.model.rotation.y = Math.PI;
+        this.scene.add(this.model);
+
+        // hide weapons that are initially visible
+        this.hideModelPart("Revolver");
+        this.hideModelPart("Revolver_Small");
+        this.hideModelPart("Sniper");
+        this.hideModelPart("Sniper_2");
+        this.hideModelPart("Shotgun");
+        this.hideModelPart("ShortCannon");
+        this.hideModelPart("SMG");
+        this.hideModelPart("Pistol");
+        this.hideModelPart("GrenadeLauncher");
+        this.hideModelPart("Shovel");
+        this.hideModelPart("Knife_1");
+        this.hideModelPart("Knife_2");
+        this.hideModelPart("RocketLauncher");
+
+        // hide character parts that disturbs the camera view
+        this.hideModelPart("Head_2");
+        this.hideModelPart("Head_3");
+        this.hideModelPart("Head_4");
+    }
+
+    initPhysics() {
+        const radius = 1.0;
+        this.shape = new CANNON.Sphere(radius);
+        this.body = new CANNON.Body({
+            mass: 5,
+            position: new CANNON.Vec3(0, 0, 0),
+            shape: this.shape,
+            material: new CANNON.Material("physics"),
+            linearDamping: 0.9,
+        });
+
+        this.physicsWorld.instance.addBody(this.body);
     }
 
     initAnimations() {
@@ -127,8 +171,8 @@ export default class Player {
         const vector = new THREE.Vector3(0, 0, 1);
         vector.unproject(this.camera.instance);
         const ray = new THREE.Ray(
-            this.camera.body.position,
-            vector.sub(this.camera.body.position).normalize()
+            this.body.position,
+            vector.sub(this.body.position).normalize()
         );
 
         return ray.direction;
@@ -152,19 +196,19 @@ export default class Player {
         this.bulletMeshes.push(bulletMesh);
 
         const x =
-            this.camera.body.position.x +
+            this.body.position.x +
             shootDirection.x *
-                (this.camera.body.shapes[0].radius * 1.02 +
+                (this.body.shapes[0].radius * 1.02 +
                     bulletBody.shapes[0].radius);
         const y =
-            this.camera.body.position.y +
+            this.body.position.y +
             shootDirection.y *
-                (this.camera.body.shapes[0].radius * 1.02 +
+                (this.body.shapes[0].radius * 1.02 +
                     bulletBody.shapes[0].radius);
         const z =
-            this.camera.body.position.z +
+            this.body.position.z +
             shootDirection.z *
-                (this.camera.body.shapes[0].radius * 1.02 +
+                (this.body.shapes[0].radius * 1.02 +
                     bulletBody.shapes[0].radius);
 
         bulletBody.position.x = x;
@@ -183,28 +227,24 @@ export default class Player {
         const shootDirection = this.getShootDirection();
 
         const x =
-            this.camera.body.position.x +
+            this.body.position.x +
             shootDirection.x *
-                (this.camera.body.shapes[0].radius * 1.02 +
+                (this.body.shapes[0].radius * 1.02 +
                     bullet.body.shapes[0].radius);
         const y =
-            this.camera.body.position.y +
+            this.body.position.y +
             shootDirection.y *
-                (this.camera.body.shapes[0].radius * 1.02 +
+                (this.body.shapes[0].radius * 1.02 +
                     bullet.body.shapes[0].radius);
 
         const z =
-            this.camera.body.position.z +
+            this.body.position.z +
             shootDirection.z *
-                (this.camera.body.shapes[0].radius * 1.02 +
+                (this.body.shapes[0].radius * 1.02 +
                     bullet.body.shapes[0].radius);
 
         const bulletPosition = new THREE.Vector3(x, y, z);
         bullet.updatePosition(bulletPosition);
-        bullet.updateRotation({
-            x: this.firstPersonControls.pitchObject.rotation.x,
-            y: this.firstPersonControls.yawObject.rotation.y,
-        });
 
         this.bullets.push(bullet);
 
@@ -225,14 +265,36 @@ export default class Player {
             this.shootBullet();
         }
 
-        // this.bulletMeshes.forEach((bulletMesh, index) => {
-        //     bulletMesh.position.copy(this.bulletBodys[index].position);
-        //     bulletMesh.quaternion.copy(this.bulletBodys[index].quaternion);
-        // });
-
         this.bullets.forEach((bullet) => {
             bullet.update();
         });
+
+        const directions = ["w", "a", "s", "d"];
+        const directionIsPressed = directions.some(
+            (key) => this.keysPressed[key] == true
+        );
+
+        // set the right animation
+        if (
+            this.mouseKeysPressed.left &&
+            this.animation.actions.current !== this.animation.actions.idleShoot
+        ) {
+            this.animation.play("idleShoot");
+        } else if (
+            directionIsPressed &&
+            Object.keys(this.mouseKeysPressed).length === 0 &&
+            this.animation.actions.current !== this.animation.actions.run
+        ) {
+            this.animation.play("run");
+        } else if (
+            !directionIsPressed &&
+            Object.keys(this.mouseKeysPressed).length === 0 &&
+            this.animation.actions.current !== this.animation.actions.idle
+        ) {
+            this.animation.play("idle");
+        }
+
+        this.animation.mixer.update(this.time.delta * 0.001);
     }
 
     hideModelPart(name) {

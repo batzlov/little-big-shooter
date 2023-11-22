@@ -18,8 +18,10 @@ export default class Player {
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
         this.debug = this.experience.debug;
-        this.bulletRotation = new THREE.Euler();
 
+        this.bulletRotation = new THREE.Euler();
+        this.bulletsPerMagazine = 45;
+        this.bulletsLeft = this.bulletsPerMagazine;
         this.bullets = [];
         this.bulletBodys = [];
         this.bulletMeshes = [];
@@ -62,6 +64,11 @@ export default class Player {
         this.inputHandler.on("shoot", () => {
             this.soundHandler.playShootSound();
             this.shootBullet();
+        });
+
+        this.inputHandler.on("reload", () => {
+            this.soundHandler.playReloadSound();
+            this.bulletsLeft = this.bulletsPerMagazine;
         });
     }
 
@@ -162,6 +169,13 @@ export default class Player {
             const newAction = this.animation.actions[name];
             const oldAction = this.animation.actions.current;
 
+            // get the name of the key
+            this.animation.previousActionName = Object.keys(
+                this.animation.actions
+            ).find((key) => {
+                return this.animation.actions[key] === oldAction;
+            });
+
             newAction.reset();
             newAction.play();
             newAction.crossFadeFrom(oldAction, 0.5);
@@ -226,6 +240,11 @@ export default class Player {
     }
 
     shootBullet() {
+        if (this.bulletsLeft === 0) {
+            this.soundHandler.playEmptySound();
+            return;
+        }
+
         const bullet = new Bullet();
         const shootDirection = this.getShootDirection();
 
@@ -261,6 +280,8 @@ export default class Player {
             shootDirection.y * shootVelocity,
             shootDirection.z * shootVelocity
         );
+
+        this.bulletsLeft--;
     }
 
     update() {
@@ -298,7 +319,9 @@ export default class Player {
         // set the right animation
         if (
             this.mouseKeysPressed.left &&
-            this.animation.actions.current !== this.animation.actions.idleShoot
+            this.animation.actions.current !==
+                this.animation.actions.idleShoot &&
+            this.bulletsLeft > 0
         ) {
             this.animation.play("idleShoot");
         } else if (
@@ -316,6 +339,10 @@ export default class Player {
         }
 
         this.animation.mixer.update(this.time.delta * 0.001);
+    }
+
+    isCurrentlyReloading() {
+        return this.soundHandler.currentlyPlaying() === "reloadSound";
     }
 
     hideModelPart(name) {

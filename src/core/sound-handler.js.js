@@ -35,6 +35,22 @@ export default class SoundHandler {
         this.sound.play();
     }
 
+    playReloadSound() {
+        this.sound.stop();
+        this.sound.setBuffer(this.ressources.items.reloadSound);
+        this.sound.setLoop(false);
+        this.sound.setVolume(0.5);
+        this.sound.play();
+    }
+
+    playEmptySound() {
+        this.sound.stop();
+        this.sound.setBuffer(this.ressources.items.emptySound);
+        this.sound.setLoop(false);
+        this.sound.setVolume(0.5);
+        this.sound.play();
+    }
+
     stop() {
         setTimeout(() => {
             this.sound.stop();
@@ -42,12 +58,25 @@ export default class SoundHandler {
     }
 
     currentlyPlaying() {
-        if (this.sound.buffer === this.ressources.items.singleShotSound) {
+        if (
+            this.sound.buffer === this.ressources.items.singleShotSound &&
+            this.sound.isPlaying
+        ) {
             return "singleShotSound";
         }
 
-        if (this.sound.buffer === this.ressources.items.burstSound) {
+        if (
+            this.sound.buffer === this.ressources.items.burstSound &&
+            this.sound.isPlaying
+        ) {
             return "burstSound";
+        }
+
+        if (
+            this.sound.buffer === this.ressources.items.reloadSound &&
+            this.sound.isPlaying
+        ) {
+            return "reloadSound";
         }
 
         return null;

@@ -175,6 +175,26 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
 
         this.yawObject.position.copy(this.playerBody.position);
 
+        if (this.player.isCurrentlyReloading()) {
+            this.pitchObject.children[1].position.lerp(
+                new THREE.Vector3(
+                    this.pitchObject.children[1].position.x,
+                    -1,
+                    this.pitchObject.children[1].position.z
+                ),
+                0.3
+            );
+        } else if (this.pitchObject.children[1].position.y !== 0) {
+            this.pitchObject.children[1].position.lerp(
+                new THREE.Vector3(
+                    this.pitchObject.children[1].position.x,
+                    0,
+                    this.pitchObject.children[1].position.z
+                ),
+                0.3
+            );
+        }
+
         // FIXME: update model position when moving, so we dont have glitching
         if (forward || backward || left || right) {
             this.pitchObject.children[0].position.y = 1.6;

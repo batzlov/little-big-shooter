@@ -95,6 +95,10 @@ export default class InputHandler extends EventEmitter {
                 this.toggleGameInstructions();
                 break;
 
+            case "KeyR":
+                this.emit("reload");
+                break;
+
             case "Escape":
                 this.lockPointer = false;
                 this.toggleGameInstructions();

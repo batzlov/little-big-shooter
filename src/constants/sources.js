@@ -84,4 +84,9 @@ export default [
         type: "audio",
         path: "sounds/triple-shot.mp3",
     },
+    {
+        name: "emptySound",
+        type: "audio",
+        path: "sounds/empty.mp3",
+    },
 ];

@@ -12,6 +12,7 @@ export default class Player {
         this.resource = this.resources.items.characterSoldierModel;
         this.world = this.experience.world;
         this.inputHandler = this.experience.inputHandler;
+        this.soundHandler = this.experience.soundHandler;
         this.physicsWorld = this.experience.physicsWorld;
         this.time = this.experience.time;
         this.clock = this.experience.clock;
@@ -59,6 +60,7 @@ export default class Player {
         this.mouseKeysPressed = this.experience.inputHandler.mouseKeysPressed;
 
         this.inputHandler.on("shoot", () => {
+            this.soundHandler.playShootSound();
             this.shootBullet();
         });
     }
@@ -268,7 +270,16 @@ export default class Player {
                 0.1 &&
             this.time.delta >= 17
         ) {
+            if (this.soundHandler.currentlyPlaying() !== "burstSound") {
+                this.soundHandler.playBurstSound();
+            }
+
             this.shootBullet();
+        } else if (
+            this.soundHandler.currentlyPlaying() === "burstSound" &&
+            !this.inputHandler.mouseKeysPressed.left
+        ) {
+            this.soundHandler.stop();
         }
 
         for (let i = 0; i < this.bullets.length; i++) {

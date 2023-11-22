@@ -64,4 +64,24 @@ export default [
         type: "gltf",
         path: "models/bullet.glb",
     },
+    {
+        name: "burstSound",
+        type: "audio",
+        path: "sounds/burst.mp3",
+    },
+    {
+        name: "reloadSound",
+        type: "audio",
+        path: "sounds/reload.mp3",
+    },
+    {
+        name: "singleShotSound",
+        type: "audio",
+        path: "sounds/single-shot.mp3",
+    },
+    {
+        name: "tripleShotSound",
+        type: "audio",
+        path: "sounds/triple-shot.mp3",
+    },
 ];

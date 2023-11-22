@@ -21,6 +21,7 @@ export default class Resources extends EventEmitter {
         this.loaders.gltfLoader = new GLTFLoader();
         this.loaders.textureLoader = new THREE.TextureLoader();
         this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
+        this.loaders.audioLoader = new THREE.AudioLoader();
     }
 
     loaderAsync(path, loader) {
@@ -90,6 +91,9 @@ export default class Resources extends EventEmitter {
                         break;
                     case "cubeTexture":
                         loader = this.loaders.cubeTextureLoader;
+                        break;
+                    case "audio":
+                        loader = this.loaders.audioLoader;
                         break;
                     default:
                         console.error("Unhandled source type...");

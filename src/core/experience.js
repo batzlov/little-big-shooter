@@ -8,6 +8,7 @@ import Sizes from "../utils/sizes.js";
 import Time from "../utils/time.js";
 import Resources from "../utils/resources.js";
 import InputHandler from "./input-handler.js";
+import SoundHandler from "./sound-handler.js";
 
 import Camera from "../core/camera.js";
 import Renderer from "../core/renderer.js";
@@ -43,6 +44,7 @@ export default class Experience {
         this.scene = new THREE.Scene();
         this.resources = new Resources(sources);
         await this.resources.load();
+        this.soundHandler = new SoundHandler();
         this.inputHandler = new InputHandler();
         this.physicsWorld = new PhysicsWorld();
         this.camera = new Camera();

@@ -41,6 +41,7 @@ export default class Bullet {
             linearDamping: 0.01,
             angularDamping: 0.01,
         });
+        this.body.isBullet = true;
 
         this.physicsWorld.instance.addBody(this.body);
     }

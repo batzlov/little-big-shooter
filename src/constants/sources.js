@@ -37,7 +37,17 @@ export default [
     {
         name: "characterSoldierModel",
         type: "gltf",
-        path: "models/character-soldier.glb",
+        path: "models/toon-shooter-game-kit/character-soldier.glb",
+    },
+    {
+        name: "characterEnemyModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/character-enemy.glb",
+    },
+    {
+        name: "characterHazmatModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/character-hazmat.glb",
     },
     {
         name: "shippingContainerModel",

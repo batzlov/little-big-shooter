@@ -13,7 +13,7 @@ import Tree from "./tree.js";
 import ShippingContainer from "./shipping-container.js";
 import ShippingContainerStructure from "./shipping-container-structure.js";
 import MetalFence from "./metal-fence.js";
-import Player from "./player.js";
+import Enemy from "./enemy.js";
 
 export default class World {
     constructor() {
@@ -24,6 +24,7 @@ export default class World {
         this.debug = this.experience.debug;
         this.time = this.experience.time;
         this.camera = this.experience.camera;
+        this.physicsWorld = this.experience.physicsWorld;
         this.firstPersonControls = this.experience.firstPersonControls;
         this.initWorld();
     }
@@ -42,6 +43,7 @@ export default class World {
         this.initSkybox();
         this.initWorldBoundaries();
         this.initTrees();
+        this.initEnemies();
     }
 
     initPhysics() {
@@ -606,6 +608,13 @@ export default class World {
         });
     }
 
+    initEnemies() {
+        this.enemies = [];
+        this.enemies.push(new Enemy({ x: 0, y: 0, z: -10 }));
+        this.enemies.push(new Enemy({ x: 0, y: 0, z: -20 }));
+        this.enemies.push(new Enemy({ x: 0, y: 0, z: -30 }));
+    }
+
     update() {
         if (this.obstacles) {
             this.obstacles.forEach((obstacle) => {
@@ -614,5 +623,19 @@ export default class World {
                 }
             });
         }
+
+        this.enemies.forEach((enemy) => {
+            if (enemy.isDeath) {
+                this.scene.remove(enemy.model);
+                // remove body from physics world
+                this.physicsWorld.instance.removeBody(enemy.body);
+
+                this.enemies.splice(this.enemies.indexOf(enemy), 1);
+            }
+
+            if (enemy.update) {
+                enemy.update();
+            }
+        });
     }
 }

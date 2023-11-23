@@ -7,7 +7,7 @@ export default class PhysicsWorld {
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.time = this.experience.time;
-        this.debug = false;
+        this.debug = true;
 
         this.initInstance();
 

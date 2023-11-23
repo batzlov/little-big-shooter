@@ -274,7 +274,7 @@ export default class Player {
 
         this.bullets.push(bullet);
 
-        const shootVelocity = 400;
+        const shootVelocity = 50;
         bullet.body.velocity.set(
             shootDirection.x * shootVelocity,
             shootDirection.y * shootVelocity,

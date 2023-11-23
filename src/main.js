@@ -1,3 +1,7 @@
-import Experience from "./core/experience.js";
+import App from "./core/app";
 
-const expierence = new Experience(document.querySelector("canvas.webgl"));
+function main() {
+    const app = new App();
+}
+
+main();

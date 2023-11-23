@@ -38,7 +38,7 @@ export default class InputHandler extends EventEmitter {
             movementY: 0,
         };
 
-        this.lockPointer = false;
+        this.lockPointer = true;
 
         window.addEventListener("keydown", (event) => {
             this.onKeyDown(event);
@@ -58,10 +58,6 @@ export default class InputHandler extends EventEmitter {
 
         window.addEventListener("mousemove", (event) => {
             this.onMouseMove(event);
-        });
-
-        window.addEventListener("dblclick", (event) => {
-            this.onDblClick(event);
         });
     }
 
@@ -91,17 +87,16 @@ export default class InputHandler extends EventEmitter {
                 break;
 
             case "KeyF":
-                this.lockPointer = true;
-                this.toggleGameInstructions();
+                this.toggleFullscreen();
                 break;
 
             case "KeyR":
                 this.emit("reload");
                 break;
 
-            case "Escape":
+            case "KeyP":
                 this.lockPointer = false;
-                this.toggleGameInstructions();
+                this.experience.isPaused = true;
                 break;
 
             case "Space":
@@ -110,8 +105,11 @@ export default class InputHandler extends EventEmitter {
         }
     }
 
-    toggleGameInstructions() {
-        document.querySelector(".game-instructions").classList.toggle("hidden");
+    toggleMainMenu() {
+        this.experience.isPaused = !this.experience.isPaused;
+
+        document.querySelector(".main-menu").classList.toggle("hidden");
+        document.querySelector("canvas.webgl").classList.toggle("hidden");
     }
 
     onKeyUp(event) {
@@ -192,7 +190,7 @@ export default class InputHandler extends EventEmitter {
         this.mouseMovements.movementY = event.movementY;
     }
 
-    onDblClick() {
+    toggleFullscreen() {
         const fullscreenElement =
             document.fullscreenElement || document.webkitFullscreenElement;
 

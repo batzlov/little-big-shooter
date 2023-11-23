@@ -6,6 +6,7 @@ import sources from "../constants/sources.js";
 import Debug from "../utils/debug.js";
 import Sizes from "../utils/sizes.js";
 import Time from "../utils/time.js";
+import EventEmitter from "../utils/event-emitter.js";
 import Resources from "../utils/resources.js";
 import InputHandler from "./input-handler.js";
 import SoundHandler from "./sound-handler.js";
@@ -31,6 +32,7 @@ export default class Experience {
         window.experience = this;
 
         this.canvas = canvas;
+        this.isPaused = false;
 
         this.init();
         this.initEvents();
@@ -79,6 +81,10 @@ export default class Experience {
     }
 
     update() {
+        if (this.isPaused) {
+            return;
+        }
+
         if (this.camera) {
             this.camera.update();
         }

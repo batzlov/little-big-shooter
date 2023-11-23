@@ -202,7 +202,9 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
             this.pitchObject.children[0].position.y = 1.4;
         }
 
-        this.updateCrosshair();
+        if (this.crosshair) {
+            this.updateCrosshair();
+        }
     }
 
     updateRotation() {

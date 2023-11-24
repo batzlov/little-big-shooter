@@ -218,7 +218,6 @@ export default class Player {
                 (this.body.shapes[0].radius * 1.02 +
                     bullet.body.shapes[0].radius) +
             (this.camera.instance.position.y - 0.2);
-        console.log(y);
 
         const z =
             this.body.position.z +

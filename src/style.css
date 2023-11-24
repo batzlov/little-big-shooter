@@ -6,6 +6,9 @@
     margin: 0;
     padding: 0;
     /* cursor: none; */
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 html,

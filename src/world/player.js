@@ -198,50 +198,6 @@ export default class Player {
         return ray.direction;
     }
 
-    shootBulletLegacy() {
-        const shootDirection = this.getShootDirection();
-        const bulletBody = new CANNON.Body({
-            mass: 1,
-            shape: new CANNON.Sphere(0.05),
-        });
-        const bulletMesh = new THREE.Mesh(
-            new THREE.SphereGeometry(0.01, 8, 8),
-            new THREE.MeshBasicMaterial({ color: 0xffffff })
-        );
-
-        this.physicsWorld.instance.addBody(bulletBody);
-        this.bulletBodys.push(bulletBody);
-
-        this.scene.add(bulletMesh);
-        this.bulletMeshes.push(bulletMesh);
-
-        const x =
-            this.body.position.x +
-            shootDirection.x *
-                (this.body.shapes[0].radius * 1.02 +
-                    bulletBody.shapes[0].radius);
-        const y =
-            this.body.position.y +
-            shootDirection.y *
-                (this.body.shapes[0].radius * 1.02 +
-                    bulletBody.shapes[0].radius);
-        const z =
-            this.body.position.z +
-            shootDirection.z *
-                (this.body.shapes[0].radius * 1.02 +
-                    bulletBody.shapes[0].radius);
-
-        bulletBody.position.x = x;
-        bulletBody.position.y = y;
-        bulletBody.position.z = z;
-
-        bulletBody.velocity.set(
-            shootDirection.x * 100,
-            shootDirection.y * 100,
-            shootDirection.z * 100
-        );
-    }
-
     shootBullet() {
         if (this.bulletsLeft === 0) {
             this.soundHandler.playEmptySound();
@@ -262,6 +218,7 @@ export default class Player {
                 (this.body.shapes[0].radius * 1.02 +
                     bullet.body.shapes[0].radius) +
             (this.camera.instance.position.y - 0.2);
+        console.log(y);
 
         const z =
             this.body.position.z +
@@ -279,7 +236,8 @@ export default class Player {
         bullet.body.velocity.set(
             shootDirection.x * shootVelocity,
             // smaller values so the bullet flies more straight
-            shootDirection.y * (shootVelocity / 4),
+            // shootDirection.y * (shootVelocity / 4),
+            0,
             shootDirection.z * shootVelocity
         );
 

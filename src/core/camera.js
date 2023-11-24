@@ -14,15 +14,7 @@ export default class Camera {
         this.inputHandler = this.experience.inputHandler;
         this.debug = this.experience.debug;
 
-        // first person view
-        this.rotation = new THREE.Quaternion();
         this.translation = new THREE.Vector3(0, 1.5, 15);
-        this.phi = 0;
-        this.phiSpeed = 6;
-        this.theta = 0;
-        this.thetaSpeed = 5;
-        this.headBobActive = false;
-        this.headBobTimer = 0;
 
         if (this.debug.active) {
             this.debugFolder = this.debug.ui.addFolder("CAMERA");
@@ -52,7 +44,6 @@ export default class Camera {
         }
 
         this.initInstance();
-        // this.initPhysics();
     }
 
     initInstance() {
@@ -66,20 +57,6 @@ export default class Camera {
         this.instance.position.y = 1.4;
 
         this.scene.add(this.instance);
-    }
-
-    initPhysics() {
-        const radius = 1.0;
-        this.shape = new CANNON.Sphere(radius);
-        this.body = new CANNON.Body({
-            mass: 5,
-            position: new CANNON.Vec3(0, 0, 0),
-            shape: this.shape,
-            material: new CANNON.Material("physics"),
-            linearDamping: 0.9,
-        });
-
-        this.physicsWorld.instance.addBody(this.body);
     }
 
     resize() {

@@ -77,7 +77,7 @@ export default class App {
             case "restart":
                 this.restartGame();
                 break;
-            case "instrcutions":
+            case "instructions":
                 this.showInstructions();
                 break;
         }
@@ -85,9 +85,10 @@ export default class App {
 
     startGame() {
         document.querySelector(".main-menu").classList.add("hidden");
-        document.querySelector("canvas.webgl").classList.remove("hidden");
+        // document.querySelector("canvas.webgl").classList.remove("hidden");
         this.experience = new Experience(
-            document.querySelector("canvas.webgl")
+            document.querySelector("canvas.webgl"),
+            document.querySelector(".loading-screen")
         );
     }
 

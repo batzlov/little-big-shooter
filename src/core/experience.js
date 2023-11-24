@@ -22,7 +22,7 @@ import Player from "../world/player.js";
 let instance = null;
 
 export default class Experience {
-    constructor(canvas) {
+    constructor(canvas, loadingScreen) {
         if (instance) {
             return instance;
         }
@@ -32,6 +32,7 @@ export default class Experience {
         window.experience = this;
 
         this.canvas = canvas;
+        this.loadingScreen = loadingScreen;
         this.isPaused = false;
 
         this.init();
@@ -39,6 +40,7 @@ export default class Experience {
     }
 
     async init() {
+        this.showLoadingIndicator();
         this.debug = new Debug();
         this.sizes = new Sizes();
         this.time = new Time();
@@ -58,6 +60,7 @@ export default class Experience {
         );
         this.world = new World();
         this.scene.add(this.firstPersonControls.getObject());
+        this.hideLoadingIndicator();
     }
 
     initEvents() {
@@ -137,5 +140,15 @@ export default class Experience {
         if (this.debug.active) {
             this.debug.ui.destroy();
         }
+    }
+
+    showLoadingIndicator() {
+        this.loadingScreen.classList.remove("hidden");
+        console.log(this.loadingScreen.classList);
+    }
+
+    hideLoadingIndicator() {
+        this.loadingScreen.classList.add("hidden");
+        this.canvas.classList.remove("hidden");
     }
 }

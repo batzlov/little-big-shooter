@@ -65,11 +65,20 @@ export default class Player {
         this.mouseKeysPressed = this.experience.inputHandler.mouseKeysPressed;
 
         this.inputHandler.on("shoot", () => {
+            if (!this.inputHandler.lockPointer) {
+                return;
+            }
+
             this.soundHandler.playShootSound();
             this.shootBullet();
         });
 
         this.inputHandler.on("reload", () => {
+            if (!this.inputHandler.lockPointer) {
+                return;
+            }
+
+            this.experience.hideReloadInfo();
             this.soundHandler.playReloadSound();
             this.bulletsLeft = this.bulletsPerMagazine;
         });
@@ -244,6 +253,10 @@ export default class Player {
     }
 
     update() {
+        if (this.bulletsLeft < 5) {
+            this.experience.showReloadInfo();
+        }
+
         if (
             this.inputHandler.mouseKeysPressed.left &&
             this.inputHandler.mouseKeysPressed.leftPressedClock.getElapsedTime() >

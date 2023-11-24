@@ -16,14 +16,26 @@
     <div class="main-menu h-screen w-screen flex flex-col justify-center items-center">
         <h1 class="main-menu-title text-5xl text-center font-mono mb-12">LITTLE BIG SHOOTER</h1>
         <button class="main-menu-btn btn btn-wide btn-primary" data-action="start">STARTEN</button>
+        <button class="main-menu-btn btn btn-wide btn-neutral btn-disabled mt-4"
+            data-action="instructions">ANLEITUNG</button>
         <button class="main-menu-btn btn btn-wide btn-neutral mt-4 hidden" data-action="resume">FORTSETZEN</button>
         <button class="main-menu-btn btn btn-wide btn-neutral mt-4 hidden" data-action="restart">NEUSTARTEN</button>
-        <button class="main-menu-btn btn btn-wide btn-neutral mt-4" data-action="instructions">ANLEITUNG</button>
     </div>
     <div class="loading-screen h-screen w-screen flex flex-col justify-center items-center hidden">
         <progress class="progress w-80"></progress>
     </div>
+
     <canvas class="webgl hidden"></canvas>
+    <div class="reload-info fadable-element fade-out">
+        <div class="card glass">
+            <div class="card-title"></div>
+            <div class="card-body">
+                <div class="text-2xl font-bold font-mono whitespace-nowrap">
+                    [R] NACHLADEN
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="module" src="./main.js"></script>
 </body>
 

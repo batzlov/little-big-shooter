@@ -23,29 +23,28 @@ body {
     outline: none;
 }
 
-.game-instructions {
-    z-index: 2;
-    position: fixed;
-    left: 0;
-    top: 0;
-
-    width: 100%;
-    height: 100%;
-
+.reload-info {
+    z-index: 10;
+    position: absolute;
+    bottom: 15px;
+    right: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #ffffff;
-    text-align: center;
-
-    cursor: pointer;
 }
 
-.game-instructions span {
-    font-size: 40px;
+.fadable-element {
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    -moz-transition: opacity 0.5s ease-in-out;
+    -webkit-transition: opacity 0.5s ease-in-out;
+}
+
+.fade-out {
+    opacity: 0;
 }
 
 .hidden {

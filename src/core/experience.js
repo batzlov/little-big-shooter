@@ -22,7 +22,7 @@ import Player from "../world/player.js";
 let instance = null;
 
 export default class Experience {
-    constructor(canvas, loadingScreen) {
+    constructor(canvas, loadingScreen, reloadInfo) {
         if (instance) {
             return instance;
         }
@@ -33,6 +33,7 @@ export default class Experience {
 
         this.canvas = canvas;
         this.loadingScreen = loadingScreen;
+        this.reloadInfo = reloadInfo;
         this.isPaused = false;
 
         this.init();
@@ -144,11 +145,18 @@ export default class Experience {
 
     showLoadingIndicator() {
         this.loadingScreen.classList.remove("hidden");
-        console.log(this.loadingScreen.classList);
     }
 
     hideLoadingIndicator() {
         this.loadingScreen.classList.add("hidden");
         this.canvas.classList.remove("hidden");
+    }
+
+    showReloadInfo() {
+        this.reloadInfo.classList.remove("fade-out");
+    }
+
+    hideReloadInfo() {
+        this.reloadInfo.classList.add("fade-out");
     }
 }

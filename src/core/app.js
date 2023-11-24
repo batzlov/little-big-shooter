@@ -88,7 +88,8 @@ export default class App {
         // document.querySelector("canvas.webgl").classList.remove("hidden");
         this.experience = new Experience(
             document.querySelector("canvas.webgl"),
-            document.querySelector(".loading-screen")
+            document.querySelector(".loading-screen"),
+            document.querySelector(".reload-info")
         );
     }
 
@@ -101,8 +102,7 @@ export default class App {
     }
 
     restartGame() {
-        this.experience.destroy();
-        this.startGame();
+        window.location.reload();
     }
 
     showInstructions() {}
@@ -110,6 +110,12 @@ export default class App {
     showPauseMenu() {
         document.querySelector(".main-menu").classList.toggle("hidden");
         document.querySelector("canvas.webgl").classList.toggle("hidden");
+
+        // check if we need to toggle the buttons in the menu, this is
+        // only the case if we open the pause menu the first time
+        if (this.menuButtons[0].getAttribute("data-action") === "resume") {
+            return;
+        }
 
         // hide start and instructions buttons
         let pauseMenuButtons = document.querySelectorAll(

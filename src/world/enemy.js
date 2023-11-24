@@ -2,7 +2,7 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 
-import Experience from "./core/Experience.js";
+import Experience from "../core/experience.js";
 
 export default class Enemy {
     constructor(position) {

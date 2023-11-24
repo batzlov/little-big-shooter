@@ -175,31 +175,35 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
 
         this.yawObject.position.copy(this.playerBody.position);
 
+        const pitchObjectCameraIndex = 0;
+        const pitchObjectPlayerIndex = 1;
         if (this.player.isCurrentlyReloading()) {
-            this.pitchObject.children[1].position.lerp(
-                new THREE.Vector3(
-                    this.pitchObject.children[1].position.x,
-                    -1,
-                    this.pitchObject.children[1].position.z
-                ),
-                0.3
-            );
-        } else if (this.pitchObject.children[1].position.y !== 0) {
-            this.pitchObject.children[1].position.lerp(
-                new THREE.Vector3(
-                    this.pitchObject.children[1].position.x,
-                    0,
-                    this.pitchObject.children[1].position.z
-                ),
-                0.3
-            );
+            this.pitchObject.children[pitchObjectPlayerIndex].visible = false;
+        } else if (!this.pitchObject.children[1].visible) {
+            this.pitchObject.children[pitchObjectPlayerIndex].visible = true;
         }
 
-        // FIXME: update model position when moving, so we dont have glitching
+        // FIXME: update camera position when moving, so we dont have glitching
+        let positionVectorMovement = new THREE.Vector3(
+            this.pitchObject.children[pitchObjectCameraIndex].position.x,
+            1.55,
+            this.pitchObject.children[pitchObjectCameraIndex].position.z
+        );
+        let positionVectorIdle = new THREE.Vector3(
+            this.pitchObject.children[pitchObjectCameraIndex].position.x,
+            1.45,
+            this.pitchObject.children[pitchObjectCameraIndex].position.z
+        );
         if (forward || backward || left || right) {
-            this.pitchObject.children[0].position.y = 1.6;
+            this.pitchObject.children[pitchObjectCameraIndex].position.lerp(
+                positionVectorMovement,
+                0.3
+            );
         } else {
-            this.pitchObject.children[0].position.y = 1.4;
+            this.pitchObject.children[pitchObjectCameraIndex].position.lerp(
+                positionVectorIdle,
+                0.3
+            );
         }
 
         if (this.crosshair) {
@@ -240,10 +244,12 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
     // TODO: not the right place
     lock() {
         document.body.requestPointerLock();
+        document.body.style.cursor = "none";
     }
 
     unlock() {
         document.exitPointerLock();
+        document.body.style.cursor = "default";
     }
 
     onPointerlockChange = () => {

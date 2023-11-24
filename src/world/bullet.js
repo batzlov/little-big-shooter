@@ -27,10 +27,11 @@ export default class Bullet {
             this.position.y,
             this.position.z
         );
-        this.model.rotation.y += Math.PI;
 
-        const scale = 0.03;
+        const scale = 0.001;
         this.model.scale.set(scale, scale, scale);
+
+        // this.model.rotation.x = 0.5 * Math.PI;
         this.scene.add(this.model);
     }
 
@@ -59,12 +60,11 @@ export default class Bullet {
     updateRotation(rotation) {
         this.model.rotation.x += rotation.x;
         this.model.rotation.y += rotation.y;
-        this.model.rotation.y += 0.5 * Math.PI;
     }
 
     update() {
         this.model.position.copy(this.body.position);
-        this.model.quaternion.copy(this.body.quaternion);
+        // this.model.quaternion.copy(this.body.quaternion);
 
         if (new Date() - this.shotAt > this.destroyBulletAfter) {
             this.destroy();

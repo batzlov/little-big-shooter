@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
 
+import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
+
 import Experience from "../core/experience";
 import Bullet from "./bullet";
 
@@ -22,6 +24,7 @@ export default class Player {
         this.bulletRotation = new THREE.Euler();
         this.bulletsPerMagazine = 45;
         this.bulletsLeft = this.bulletsPerMagazine;
+
         this.bullets = [];
         this.bulletBodys = [];
         this.bulletMeshes = [];
@@ -248,9 +251,6 @@ export default class Player {
         const bullet = new Bullet();
         const shootDirection = this.getShootDirection();
 
-        // FIXME: doesnt work as supposed
-        bullet.model.quaternion.setFromEuler(this.bulletRotation);
-
         const x =
             this.body.position.x +
             shootDirection.x *
@@ -271,13 +271,15 @@ export default class Player {
 
         const bulletPosition = new THREE.Vector3(x, y, z);
         bullet.updatePosition(bulletPosition);
+        bullet.updateRotation(this.bulletRotation);
 
         this.bullets.push(bullet);
 
         const shootVelocity = 50;
         bullet.body.velocity.set(
             shootDirection.x * shootVelocity,
-            shootDirection.y * shootVelocity,
+            // smaller values so the bullet flies more straight
+            shootDirection.y * (shootVelocity / 4),
             shootDirection.z * shootVelocity
         );
 

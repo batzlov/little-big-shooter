@@ -72,7 +72,7 @@ export default [
     {
         name: "bulletModel",
         type: "gltf",
-        path: "models/bullet.glb",
+        path: "models/bullet-2.glb", // model was rotated 90 degrees on x axis
     },
     {
         name: "burstSound",

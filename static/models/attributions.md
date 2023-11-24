@@ -5,3 +5,4 @@ Car (car.glb) by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by
 Character Soldier (character-soldier.glb) by Quaternius (https://poly.pizza/m/PpLF4rt4ah)
 Toon Shooter Game Kit by Quaternius via Poly Pizza (https://poly.pizza/bundle/Toon-Shooter-Game-Kit-qraiSXoAru)
 Bullet (bullet.glb) by Poly by Google [CC-BY] via Poly Pizza (https://poly.pizza/m/2_eJPKc_a_D)
+Bullet (bullet-2.glb) by Poly by Google [CC-BY] via Poly Pizza (https://poly.pizza/m/3Tx5Sj3TyPw)

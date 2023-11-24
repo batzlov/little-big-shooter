@@ -7,11 +7,11 @@ export default class PhysicsWorld {
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.time = this.experience.time;
-        this.debug = true;
+        this.debug = this.experience.debug;
 
         this.initInstance();
 
-        if (this.debug) {
+        if (this.debug.active) {
             this.debugger = new CannonDebugger(this.scene, this.instance);
         }
     }
@@ -42,7 +42,7 @@ export default class PhysicsWorld {
     update() {
         this.instance.fixedStep();
 
-        if (this.debug) {
+        if (this.debug.active) {
             this.debugger.update();
         }
     }

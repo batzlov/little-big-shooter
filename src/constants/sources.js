@@ -75,6 +75,56 @@ export default [
         path: "models/bullet-2.glb", // model was rotated 90 degrees on x axis
     },
     {
+        name: "dumpsterModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/dumpster.glb",
+    },
+    {
+        name: "trashContainerOpenModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/trash-container-open.glb",
+    },
+    {
+        name: "waterTankModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/water-tank.glb",
+    },
+    {
+        name: "waterTankFloorModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/water-tank-floor.glb",
+    },
+    {
+        name: "barrierTrashModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/barrier-trash.glb",
+    },
+    {
+        name: "sackTrenchModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/sack-trench.glb",
+    },
+    {
+        name: "structureModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/structure.glb",
+    },
+    {
+        name: "structure2Model",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/structure-oUkHO0kbQt.glb",
+    },
+    {
+        name: "structure3Model",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/structure-PB5Cd3dL24.glb",
+    },
+    {
+        name: "brokenCarModel",
+        type: "gltf",
+        path: "models/toon-shooter-game-kit/broken-car.glb",
+    },
+    {
         name: "burstSound",
         type: "audio",
         path: "sounds/burst.mp3",

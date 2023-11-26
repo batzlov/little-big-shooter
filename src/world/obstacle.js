@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import * as YUKA from "yuka";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 
 import Experience from "../core/experience";
@@ -11,6 +12,7 @@ export default class Obstacle {
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.physicsWorld = this.experience.physicsWorld;
+        this.yukaEntityManager = this.experience.yukaEntityManager;
 
         this.position = position;
         this.rotation = rotation;
@@ -21,6 +23,7 @@ export default class Obstacle {
     init() {
         this.initModel();
         this.initPhysics();
+        this.initYukaGameEntity();
     }
 
     initModel() {
@@ -64,5 +67,13 @@ export default class Obstacle {
         });
 
         this.physicsWorld.instance.addBody(this.body);
+    }
+
+    initYukaGameEntity() {
+        this.yukaGameEntity = new YUKA.GameEntity();
+        this.yukaGameEntity.position.copy(this.body.position);
+        this.yukaGameEntity.rotation.copy(this.body.quaternion);
+        this.yukaGameEntity.boundingRadius = this.shape.halfExtents.x * 4;
+        this.yukaEntityManager.add(this.yukaGameEntity);
     }
 }

@@ -14,6 +14,7 @@ export default class ShippingContainer {
 
         this.initModel();
         this.initPhysics();
+        this.initYukaGameEntity();
     }
 
     initModel() {
@@ -51,5 +52,13 @@ export default class ShippingContainer {
         });
 
         this.physicsWorld.instance.addBody(this.body);
+    }
+
+    initYukaGameEntity() {
+        this.yukaGameEntity = new YUKA.GameEntity();
+        this.yukaGameEntity.position.copy(this.body.position);
+        this.yukaGameEntity.rotation.copy(this.body.quaternion);
+        this.yukaGameEntity.boundingRadius = this.shape.halfExtents.x * 4;
+        this.yukaEntityManager.add(this.yukaGameEntity);
     }
 }

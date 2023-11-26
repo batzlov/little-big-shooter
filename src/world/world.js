@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+
 import CannonDebugger from "cannon-es-debugger";
 import Experience from "../core/experience.js";
 
@@ -35,6 +36,7 @@ export default class World {
         this.environment = new Environment();
 
         this.obstacles = [];
+        this.yukaObstacles = [];
 
         this.initSkybox();
         this.initWorldBoundaries();
@@ -125,6 +127,7 @@ export default class World {
     initTrees() {
         this.level.trees.forEach((treePosition) => {
             const tree = new Tree(treePosition);
+            this.yukaObstacles.push(tree.yukaGameEntity);
             this.scene.add(tree.model);
         });
     }
@@ -134,14 +137,14 @@ export default class World {
             const resourceName = obstacle.type + "Model";
             const ressource = this.resources.items[resourceName];
 
-            this.obstacles.push(
-                new Obstacle(
-                    ressource,
-                    obstacle.position,
-                    obstacle.rotation,
-                    obstacle.scale
-                )
+            const obstacleInstance = new Obstacle(
+                ressource,
+                obstacle.position,
+                obstacle.rotation,
+                obstacle.scale
             );
+            this.obstacles.push(obstacleInstance);
+            this.yukaObstacles.push(obstacleInstance.yukaGameEntity);
         });
     }
 
@@ -150,11 +153,14 @@ export default class World {
 
         for (let i = 0; i < this.level.enemyCount; i++) {
             this.enemies.push(
-                new Enemy({
-                    x: this.randomNumber(-80, 80),
-                    y: 0,
-                    z: this.randomNumber(-80, 80),
-                })
+                new Enemy(
+                    {
+                        x: this.randomNumber(-80, 80),
+                        y: 0,
+                        z: this.randomNumber(-80, 80),
+                    },
+                    this.yukaObstacles
+                )
             );
         }
     }

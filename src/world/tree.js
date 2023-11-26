@@ -1,11 +1,14 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import * as YUKA from "yuka";
+
 import Experience from "../core/experience";
 
 export default class Tree {
     constructor(position = { x: 0, y: 0, z: 0 }) {
         this.experience = new Experience();
         this.scene = this.experience.scene;
+        this.yukaEntityManager = this.experience.yukaEntityManager;
         this.resources = this.experience.resources;
         this.models = [
             this.resources.items.treeModel,
@@ -20,6 +23,7 @@ export default class Tree {
 
         this.initModel();
         this.initPhysics();
+        this.initYukaGameEntity();
     }
 
     initModel() {
@@ -54,6 +58,14 @@ export default class Tree {
         });
 
         this.physicsWorld.instance.addBody(this.body);
+    }
+
+    initYukaGameEntity() {
+        this.yukaGameEntity = new YUKA.GameEntity();
+        this.yukaGameEntity.position.copy(this.body.position);
+        this.yukaGameEntity.rotation.copy(this.body.quaternion);
+        this.yukaGameEntity.boundingRadius = this.shape.halfExtents.x * 4;
+        this.yukaEntityManager.add(this.yukaGameEntity);
     }
 
     update() {}

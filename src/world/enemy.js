@@ -6,11 +6,12 @@ import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 import Experience from "../core/experience.js";
 
 export default class Enemy {
-    constructor(position) {
+    constructor(position, obstacles) {
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
         this.position = position;
+        this.obstacles = obstacles;
         this.resource = this.resources.items.characterEnemyModel;
         this.world = this.experience.world;
         this.inputHandler = this.experience.inputHandler;
@@ -115,6 +116,11 @@ export default class Enemy {
         this.vehicle.smoother = new YUKA.Smoother(5);
 
         this.yukaEntityManager.add(this.vehicle);
+
+        this.obstacleAvoidanceBehavior = new YUKA.ObstacleAvoidanceBehavior(
+            this.obstacles
+        );
+        this.vehicle.steering.add(this.obstacleAvoidanceBehavior);
 
         this.followPathBehavior = new YUKA.FollowPathBehavior(this.path);
         this.vehicle.steering.add(this.followPathBehavior);

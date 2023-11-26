@@ -23,7 +23,7 @@ import Player from "../world/player.js";
 let instance = null;
 
 export default class Experience {
-    constructor(canvas, loadingScreen, reloadInfo) {
+    constructor(canvas, loadingScreen, reloadInfo, healthInfo, weaponInfo) {
         if (instance) {
             return instance;
         }
@@ -35,6 +35,8 @@ export default class Experience {
         this.canvas = canvas;
         this.loadingScreen = loadingScreen;
         this.reloadInfo = reloadInfo;
+        this.healthInfo = healthInfo;
+        this.weaponInfo = weaponInfo;
         this.isPaused = false;
 
         this.init();
@@ -64,6 +66,8 @@ export default class Experience {
         this.world = new World();
         this.scene.add(this.firstPersonControls.getObject());
         this.hideLoadingIndicator();
+        this.showHealthInfo();
+        this.showWeaponInfo();
     }
 
     initEvents() {
@@ -147,6 +151,22 @@ export default class Experience {
         if (this.debug.active) {
             this.debug.ui.destroy();
         }
+    }
+
+    showWeaponInfo() {
+        document.querySelector(".weapon-info").classList.remove("hidden");
+    }
+
+    hideWeaponInfo() {
+        document.querySelector(".weapon-info").classList.add("hidden");
+    }
+
+    showHealthInfo() {
+        document.querySelector(".health-info").classList.remove("hidden");
+    }
+
+    hideHealthInfo() {
+        document.querySelector(".health-info").classList.add("hidden");
     }
 
     showLoadingIndicator() {

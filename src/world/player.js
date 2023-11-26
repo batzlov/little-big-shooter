@@ -81,6 +81,12 @@ export default class Player {
             this.experience.hideReloadInfo();
             this.soundHandler.playReloadSound();
             this.bulletsLeft = this.bulletsPerMagazine;
+
+            setTimeout(() => {
+                const bulletLeftInfo =
+                    this.experience.weaponInfo.querySelector("#bullets-left");
+                bulletLeftInfo.innerHTML = this.bulletsLeft;
+            }, 1800);
         });
     }
 
@@ -250,6 +256,10 @@ export default class Player {
         );
 
         this.bulletsLeft--;
+
+        const bulletLeftInfo =
+            this.experience.weaponInfo.querySelector("#bullets-left");
+        bulletLeftInfo.innerHTML = this.bulletsLeft;
     }
 
     update() {

@@ -85,15 +85,19 @@ export default class App {
 
     startGame() {
         document.querySelector(".main-menu").classList.add("hidden");
-        // document.querySelector("canvas.webgl").classList.remove("hidden");
+
         this.experience = new Experience(
             document.querySelector("canvas.webgl"),
             document.querySelector(".loading-screen"),
-            document.querySelector(".reload-info")
+            document.querySelector(".reload-info"),
+            document.querySelector(".health-info"),
+            document.querySelector(".weapon-info")
         );
     }
 
     resumeToGame() {
+        document.querySelector(".weapon-info").classList.toggle("hidden");
+        document.querySelector(".health-info").classList.toggle("hidden");
         document.querySelector(".main-menu").classList.add("hidden");
         document.querySelector("canvas.webgl").classList.remove("hidden");
         this.experience.isPaused = false;
@@ -108,6 +112,8 @@ export default class App {
     showInstructions() {}
 
     showPauseMenu() {
+        document.querySelector(".weapon-info").classList.toggle("hidden");
+        document.querySelector(".health-info").classList.toggle("hidden");
         document.querySelector(".main-menu").classList.toggle("hidden");
         document.querySelector("canvas.webgl").classList.toggle("hidden");
 

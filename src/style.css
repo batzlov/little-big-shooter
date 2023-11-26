@@ -23,14 +23,27 @@ body {
     outline: none;
 }
 
-.reload-info {
-    z-index: 10;
+.info {
     position: absolute;
     bottom: 15px;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.weapon-info {
+    right: 15px;
+}
+
+.health-info {
+    left: 15px;
+}
+
+.reload-info {
     right: 50%;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 100;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import * as YUKA from "yuka";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 
 import Experience from "../core/experience.js";
@@ -14,7 +15,9 @@ export default class Enemy {
         this.world = this.experience.world;
         this.inputHandler = this.experience.inputHandler;
         this.soundHandler = this.experience.soundHandler;
+        this.yukaEntityManager = this.experience.yukaEntityManager;
         this.physicsWorld = this.experience.physicsWorld;
+        this.player = this.experience.player;
         this.time = this.experience.time;
         this.clock = this.experience.clock;
         this.camera = this.experience.camera;
@@ -25,6 +28,7 @@ export default class Enemy {
 
         this.initModel();
         this.initPhysics();
+        this.initYukaVehicle();
         this.initAnimations();
 
         this.body.addEventListener("collide", (event) => {
@@ -58,6 +62,7 @@ export default class Enemy {
     initModel() {
         // clone model using skeleton utils
         this.model = SkeletonUtils.clone(this.resource.scene);
+        this.model.matrixAutoUpdate = false;
 
         this.model.position.copy(this.position);
 
@@ -82,6 +87,37 @@ export default class Enemy {
         });
 
         this.physicsWorld.instance.addBody(this.body);
+    }
+
+    initYukaVehicle() {
+        this.path = new YUKA.Path();
+
+        // start position of enemy
+        this.path.add(
+            new YUKA.Vector3(this.position.x, this.position.y, this.position.z)
+        );
+
+        // position of player
+        this.path.add(
+            new YUKA.Vector3(
+                this.player.model.position.x,
+                this.player.model.position.y,
+                this.player.model.position.z
+            )
+        );
+
+        this.vehicle = new YUKA.Vehicle();
+        this.vehicle.position.copy(this.model.position);
+        // random speed between 1 and 4
+        this.vehicle.maxSpeed = Math.random() * (4 - 1) + 1;
+
+        this.vehicle.setRenderComponent(this.model, this.sync);
+        this.vehicle.smoother = new YUKA.Smoother(5);
+
+        this.yukaEntityManager.add(this.vehicle);
+
+        this.followPathBehavior = new YUKA.FollowPathBehavior(this.path);
+        this.vehicle.steering.add(this.followPathBehavior);
     }
 
     initAnimations() {
@@ -133,7 +169,7 @@ export default class Enemy {
             this.resource.animations[14]
         );
 
-        this.animation.actions.current = this.animation.actions.idle;
+        this.animation.actions.current = this.animation.actions.run;
         this.animation.actions.current.play();
 
         this.animation.play = (name, loop = true) => {
@@ -153,11 +189,19 @@ export default class Enemy {
     }
 
     update() {
-        this.model.position.copy(this.body.position);
-        this.model.position.y -= 1.2;
+        this.body.position.x = this.vehicle.position.x;
+        this.body.position.z = this.vehicle.position.z;
 
-        this.model.quaternion.copy(this.body.quaternion);
+        // update path to follow player
+        this.path._waypoints[0].x = this.model.position.x;
+        this.path._waypoints[0].z = this.model.position.z;
+        this.path._waypoints[1].x = this.player.body.position.x;
+        this.path._waypoints[1].z = this.player.body.position.z;
 
         this.animation.mixer.update(this.time.delta * 0.001);
+    }
+
+    sync(entity, renderComponent) {
+        renderComponent.matrix.copy(entity.worldMatrix);
     }
 }

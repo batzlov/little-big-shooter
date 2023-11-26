@@ -15,6 +15,7 @@ import Camera from "../core/camera.js";
 import Renderer from "../core/renderer.js";
 import PhysicsWorld from "../core/physics-world.js";
 import FirstPersonControls from "../core/first-person-controls.js";
+import YUKAEntityManager from "../core/yuka-entity-manager.js";
 
 import World from "../world/world.js";
 import Player from "../world/player.js";
@@ -52,6 +53,7 @@ export default class Experience {
         this.soundHandler = new SoundHandler();
         this.inputHandler = new InputHandler();
         this.physicsWorld = new PhysicsWorld();
+        this.yukaEntityManager = new YUKAEntityManager();
         this.camera = new Camera();
         this.renderer = new Renderer();
         this.player = new Player();
@@ -107,6 +109,10 @@ export default class Experience {
 
         if (this.physicsWorld) {
             this.physicsWorld.update();
+        }
+
+        if (this.yukaEntityManager) {
+            this.yukaEntityManager.update();
         }
 
         if (this.firstPersonControls) {

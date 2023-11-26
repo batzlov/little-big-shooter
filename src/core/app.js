@@ -98,6 +98,8 @@ export default class App {
     resumeToGame() {
         document.querySelector(".weapon-info").classList.toggle("hidden");
         document.querySelector(".health-info").classList.toggle("hidden");
+        document.querySelector(".reload-info").classList.toggle("hidden");
+
         document.querySelector(".main-menu").classList.add("hidden");
         document.querySelector("canvas.webgl").classList.remove("hidden");
         this.experience.isPaused = false;
@@ -114,6 +116,8 @@ export default class App {
     showPauseMenu() {
         document.querySelector(".weapon-info").classList.toggle("hidden");
         document.querySelector(".health-info").classList.toggle("hidden");
+        document.querySelector(".reload-info").classList.toggle("hidden");
+
         document.querySelector(".main-menu").classList.toggle("hidden");
         document.querySelector("canvas.webgl").classList.toggle("hidden");
 

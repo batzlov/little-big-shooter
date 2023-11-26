@@ -76,30 +76,48 @@ export default class World {
             });
             fenceParts.push(fencePart);
 
-            fencePart = new MetalFence({
-                x: i + fenceWidth / 2,
-                y: 0,
-                z: -startZ,
-            });
-            fencePart.model.rotation.y = Math.PI;
+            fencePart = new MetalFence(
+                {
+                    x: i + fenceWidth / 2,
+                    y: 0,
+                    z: -startZ,
+                },
+                {
+                    x: 0,
+                    y: Math.PI,
+                    z: 0,
+                }
+            );
             fenceParts.push(fencePart);
         }
 
         for (let i = startZ; i < endZ; i += 3.54) {
-            let fencePart = new MetalFence({
-                x: startX,
-                y: 0,
-                z: i + fenceWidth / 2,
-            });
-            fencePart.model.rotation.y = Math.PI / 2;
+            let fencePart = new MetalFence(
+                {
+                    x: startX,
+                    y: 0,
+                    z: i + fenceWidth / 2,
+                },
+                {
+                    x: 0,
+                    y: Math.PI / 2,
+                    z: 0,
+                }
+            );
             fenceParts.push(fencePart);
 
-            fencePart = new MetalFence({
-                x: -startX,
-                y: 0,
-                z: i + fenceWidth / 2,
-            });
-            fencePart.model.rotation.y = -Math.PI / 2;
+            fencePart = new MetalFence(
+                {
+                    x: -startX,
+                    y: 0,
+                    z: i + fenceWidth / 2,
+                },
+                {
+                    x: 0,
+                    y: Math.PI / 2,
+                    z: 0,
+                }
+            );
             fenceParts.push(fencePart);
         }
     }

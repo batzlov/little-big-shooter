@@ -5,6 +5,8 @@ import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 
 import Experience from "../core/experience.js";
 
+import Bullet from "./bullet.js";
+
 export default class Enemy {
     constructor(position, obstacles) {
         this.experience = new Experience();
@@ -27,6 +29,7 @@ export default class Enemy {
         this.health = 100;
         this.isDeath = false;
         this.maxVelocity = 8;
+        this.bullet = [];
 
         this.initModel();
         this.initPhysics();
@@ -145,7 +148,7 @@ export default class Enemy {
             this.resource.animations[0]
         );
         this.animation.actions.idleShoot = this.animation.mixer.clipAction(
-            this.resource.animations[5]
+            this.resource.animations[4]
         );
         this.animation.actions.jump = this.animation.mixer.clipAction(
             this.resource.animations[6]
@@ -175,9 +178,6 @@ export default class Enemy {
             this.resource.animations[14]
         );
 
-        this.animation.actions.current = this.animation.actions.run;
-        this.animation.actions.current.play();
-
         this.animation.play = (name, loop = true) => {
             const newAction = this.animation.actions[name];
             const oldAction = this.animation.actions.current;
@@ -191,10 +191,89 @@ export default class Enemy {
             newAction.crossFadeFrom(oldAction, 0.5);
 
             this.animation.actions.current = newAction;
+            this.animation.actions.currentName = name;
         };
+
+        this.animation.actions.current = this.animation.actions.run;
+        this.animation.play("run");
+    }
+
+    shoot() {
+        // get shooting direction from model position and player body position
+        const shootDirection = new THREE.Vector3(
+            this.player.body.position.x - this.model.position.x,
+            this.player.body.position.y - this.model.position.y,
+            this.player.body.position.z - this.model.position.z
+        );
+
+        shootDirection.normalize();
+
+        const bullet = new Bullet();
+
+        const x =
+            this.body.position.x +
+            shootDirection.x *
+                (this.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius);
+        const y =
+            this.body.position.y +
+            shootDirection.y *
+                (this.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius) +
+            (this.camera.instance.position.y - 0.2);
+
+        const z =
+            this.body.position.z +
+            shootDirection.z *
+                (this.body.shapes[0].radius * 1.02 +
+                    bullet.body.shapes[0].radius);
+
+        const bulletPosition = new THREE.Vector3(x, y, z);
+        bullet.updatePosition(bulletPosition);
+
+        this.bullet.push(bullet);
+
+        const shootVelocity = 50;
+        bullet.body.velocity.set(
+            shootDirection.x * shootVelocity,
+            // smaller values so the bullet flies more straight
+            // shootDirection.y * (shootVelocity / 4),
+            0,
+            shootDirection.z * shootVelocity
+        );
     }
 
     update() {
+        const distanceToPlayer = this.vehicle.position.distanceTo(
+            new THREE.Vector3(
+                this.player.body.position.x,
+                this.player.body.position.y,
+                this.player.body.position.z
+            )
+        );
+        const triggerActionDistance = 20;
+        const stopWalkingDistance = 10;
+
+        // TODO: needs some refactoring
+        if (
+            distanceToPlayer < triggerActionDistance &&
+            this.animation.actions.current !== this.animation.actions.idleShoot
+        ) {
+            this.animation.play("idleShoot");
+        } else if (distanceToPlayer < stopWalkingDistance) {
+            this.vehicle.velocity.set(
+                this.vehicle.velocity.x * 0.25,
+                this.vehicle.velocity.y,
+                this.vehicle.velocity.z * 0.25
+            );
+        } else if (
+            distanceToPlayer > triggerActionDistance &&
+            this.animation.actions.current !== this.animation.actions.run
+        ) {
+            this.animation.play("run");
+            this.vehicle.maxSpeed = this.maxVelocity;
+        }
+
         this.body.position.x = this.vehicle.position.x;
         this.body.position.z = this.vehicle.position.z;
 

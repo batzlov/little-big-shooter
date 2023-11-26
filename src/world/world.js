@@ -23,6 +23,7 @@ export default class World {
         this.time = this.experience.time;
         this.camera = this.experience.camera;
         this.physicsWorld = this.experience.physicsWorld;
+        this.yukaEntityManager = this.experience.yukaEntityManager;
         this.firstPersonControls = this.experience.firstPersonControls;
 
         this.level = level1;
@@ -128,9 +129,16 @@ export default class World {
 
     initEnemies() {
         this.enemies = [];
-        this.enemies.push(new Enemy({ x: 0, y: 0, z: -10 }));
-        this.enemies.push(new Enemy({ x: 0, y: 0, z: -20 }));
-        this.enemies.push(new Enemy({ x: 0, y: 0, z: -30 }));
+
+        for (let i = 0; i < this.level.enemyCount; i++) {
+            this.enemies.push(
+                new Enemy({
+                    x: this.randomNumber(-80, 80),
+                    y: 0,
+                    z: this.randomNumber(-80, 80),
+                })
+            );
+        }
     }
 
     update() {
@@ -145,9 +153,8 @@ export default class World {
         this.enemies.forEach((enemy) => {
             if (enemy.isDeath) {
                 this.scene.remove(enemy.model);
-                // remove body from physics world
                 this.physicsWorld.instance.removeBody(enemy.body);
-
+                this.yukaEntityManager.remove(enemy.vehicle);
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
             }
 
@@ -155,5 +162,19 @@ export default class World {
                 enemy.update();
             }
         });
+
+        if (this.enemies.length < this.level.enemyCount) {
+            this.enemies.push(
+                new Enemy({
+                    x: this.randomNumber(-80, 80),
+                    y: 0,
+                    z: this.randomNumber(-80, 80),
+                })
+            );
+        }
+    }
+
+    randomNumber(min, max) {
+        return Math.random() * (max - min) + min;
     }
 }

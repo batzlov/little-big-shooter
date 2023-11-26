@@ -25,6 +25,7 @@ export default class Enemy {
 
         this.health = 100;
         this.isDeath = false;
+        this.maxVelocity = 8;
 
         this.initModel();
         this.initPhysics();
@@ -53,7 +54,7 @@ export default class Enemy {
                 this.animation.play("hitReact");
 
                 setTimeout(() => {
-                    this.animation.play("idle");
+                    this.animation.play("run");
                 }, 150);
             }
         });
@@ -108,8 +109,7 @@ export default class Enemy {
 
         this.vehicle = new YUKA.Vehicle();
         this.vehicle.position.copy(this.model.position);
-        // random speed between 1 and 4
-        this.vehicle.maxSpeed = Math.random() * (4 - 1) + 1;
+        this.vehicle.maxSpeed = this.maxVelocity;
 
         this.vehicle.setRenderComponent(this.model, this.sync);
         this.vehicle.smoother = new YUKA.Smoother(5);

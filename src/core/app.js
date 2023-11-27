@@ -20,6 +20,11 @@ export default class App {
                 if (event.code === "KeyP") {
                     this.showPauseMenu();
                     this.experience.firstPersonControls.unlock();
+                } else if (
+                    this.experience.player.isDead &&
+                    event.code === "Enter"
+                ) {
+                    this.startHighlightedAction();
                 }
 
                 return;
@@ -63,10 +68,10 @@ export default class App {
     }
 
     startHighlightedAction() {
-        const action =
-            this.menuButtons[this.hightlightedMenuButtonIndex].getAttribute(
-                "data-action"
-            );
+        const action = document
+            .querySelector(".btn-primary")
+            .getAttribute("data-action");
+
         switch (action) {
             case "start":
                 this.startGame();
@@ -136,12 +141,12 @@ export default class App {
                 button.classList.remove("btn-neutral");
                 button.classList.add("btn-primary");
             }
-
             button.classList.remove("hidden");
         });
 
         this.menuButtons.forEach((button) => {
             button.classList.add("hidden");
+            button.classList.remove("btn-primary");
         });
 
         this.menuButtons = pauseMenuButtons;

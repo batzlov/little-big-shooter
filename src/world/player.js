@@ -26,7 +26,10 @@ export default class Player {
         this.bulletsLeft = this.bulletsPerMagazine;
 
         this.health = 100;
-        this.hitCost = 20;
+        this.hitCost = 5;
+        this.lastHit = new Date().getTime();
+        this.regainHealthAfter = 5000;
+        this.isDead = false;
 
         this.bullets = [];
         this.bulletBodys = [];
@@ -94,10 +97,22 @@ export default class Player {
 
         this.body.addEventListener("collide", (event) => {
             if (event.body.isBullet && event.body.shotByEnemy) {
-                this.health -= this.hitCost;
-                this.experience.healthInfo.querySelector(
-                    "#health-left"
-                ).innerHTML = this.health;
+                this.regainHealth();
+
+                if (this.health > 0) {
+                    this.health -= this.hitCost;
+                    this.lastHit = new Date().getTime();
+                    this.experience.healthInfo.querySelector(
+                        "#health-left"
+                    ).innerHTML = this.health;
+                }
+
+                if (this.health == 0) {
+                    clearInterval(this.regainHealthInterval);
+                    this.experience.isPaused = true;
+                    this.isDead = true;
+                    this.experience.gameOver();
+                }
 
                 if (this.soundHandler.currentlyPlaying() !== "hurtSound") {
                     this.soundHandler.playHurtSound();
@@ -216,6 +231,26 @@ export default class Player {
 
             this.animation.actions.current = newAction;
         };
+    }
+
+    regainHealth() {
+        if (this.health === 100) {
+            return;
+        }
+
+        this.regainHealthInterval = setInterval(() => {
+            const now = new Date().getTime();
+            if (
+                this.health === 100 ||
+                now - this.lastHit < this.regainHealthAfter
+            ) {
+                return;
+            }
+
+            this.health += 5;
+            this.experience.healthInfo.querySelector("#health-left").innerHTML =
+                this.health;
+        }, 3000);
     }
 
     getShootDirection() {

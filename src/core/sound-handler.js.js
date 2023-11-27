@@ -12,6 +12,10 @@ export default class SoundHandler {
     }
 
     play(sound) {
+        if (this.experience.isPaused) {
+            return;
+        }
+
         this.sound.stop();
         this.sound.setBuffer(sound);
         this.sound.setLoop(false);
@@ -20,43 +24,23 @@ export default class SoundHandler {
     }
 
     playShootSound() {
-        this.sound.stop();
-        this.sound.setBuffer(this.ressources.items.singleShotSound);
-        this.sound.setLoop(false);
-        this.sound.setVolume(0.5);
-        this.sound.play();
+        this.play(this.ressources.items.singleShotSound);
     }
 
     playBurstSound() {
-        this.sound.stop();
-        this.sound.setBuffer(this.ressources.items.burstSound);
-        this.sound.setLoop(true);
-        this.sound.setVolume(0.5);
-        this.sound.play();
+        this.play(this.ressources.items.burstSound);
     }
 
     playReloadSound() {
-        this.sound.stop();
-        this.sound.setBuffer(this.ressources.items.reloadSound);
-        this.sound.setLoop(false);
-        this.sound.setVolume(0.5);
-        this.sound.play();
+        this.play(this.ressources.items.reloadSound);
     }
 
     playEmptySound() {
-        this.sound.stop();
-        this.sound.setBuffer(this.ressources.items.emptySound);
-        this.sound.setLoop(false);
-        this.sound.setVolume(0.5);
-        this.sound.play();
+        this.play(this.ressources.items.emptySound);
     }
 
     playHurtSound() {
-        this.sound.stop();
-        this.sound.setBuffer(this.ressources.items.hurtSound);
-        this.sound.setLoop(false);
-        this.sound.setVolume(0.5);
-        this.sound.play();
+        this.play(this.ressources.items.hurtSound);
     }
 
     stop() {

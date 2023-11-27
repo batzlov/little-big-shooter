@@ -185,4 +185,26 @@ export default class Experience {
     hideReloadInfo() {
         this.reloadInfo.classList.add("fade-out");
     }
+
+    gameOver() {
+        document.querySelector(".weapon-info").classList.toggle("hidden");
+        document.querySelector(".health-info").classList.toggle("hidden");
+        document.querySelector(".reload-info").classList.toggle("hidden");
+
+        document.querySelector(".main-menu-title").innerHTML = "GAME OVER";
+        document.querySelector(".main-menu").classList.toggle("hidden");
+        document.querySelector("canvas.webgl").classList.toggle("hidden");
+
+        const menuBtns = document.querySelectorAll(".main-menu-btn");
+        menuBtns.forEach((btn) => {
+            if (btn.getAttribute("data-action") === "restart") {
+                btn.classList.add("btn-primary");
+                btn.classList.remove("btn-neutral");
+                btn.classList.remove("hidden");
+            } else {
+                btn.classList.add("hidden");
+                btn.classList.remove("btn-primary");
+            }
+        });
+    }
 }

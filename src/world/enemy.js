@@ -201,6 +201,10 @@ export default class Enemy {
     }
 
     shoot() {
+        if (this.experience.isPaused) {
+            return;
+        }
+
         // get shooting direction from model position and player body position
         const shootDirection = new THREE.Vector3();
         shootDirection
@@ -277,7 +281,6 @@ export default class Enemy {
             );
 
             const now = new Date().getTime();
-            console.log(now, this.lastShotFired);
             if (now - this.lastShotFired > this.shotFrequency) {
                 this.shoot();
                 this.lastShotFired = now;

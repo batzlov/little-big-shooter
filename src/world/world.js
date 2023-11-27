@@ -166,6 +166,10 @@ export default class World {
     }
 
     update() {
+        if (this.experience.isPaused) {
+            return;
+        }
+
         if (this.obstacles) {
             this.obstacles.forEach((obstacle) => {
                 if (obstacle.update) {

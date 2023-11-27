@@ -16,10 +16,42 @@
     <div class="main-menu h-screen w-screen flex flex-col justify-center items-center">
         <h1 class="main-menu-title text-5xl text-center font-mono mb-12">LITTLE BIG SHOOTER</h1>
         <button class="main-menu-btn btn btn-wide btn-primary" data-action="start">STARTEN</button>
-        <button class="main-menu-btn btn btn-wide btn-neutral btn-disabled mt-4"
-            data-action="instructions">ANLEITUNG</button>
+        <button class="main-menu-btn btn btn-wide btn-neutral mt-4" data-action="instructions">ANLEITUNG</button>
         <button class="main-menu-btn btn btn-wide btn-neutral mt-4 hidden" data-action="resume">FORTSETZEN</button>
         <button class="main-menu-btn btn btn-wide btn-neutral mt-4 hidden" data-action="restart">NEUSTARTEN</button>
+        <div class="game-instructions info card glass font-mono fadable-element fade-out">
+            <div class="card-body">
+                <div class="flex items-center">
+                    <span>Die Bewegungen des Spielers kannst du entweder mit </span>
+                    <kbd class="ml-2 kbd">W</kbd>
+                    <kbd class="ml-2 kbd">A</kbd>
+                    <kbd class="ml-2 kbd">S</kbd>
+                    <kbd class="mx-2 kbd">D</kbd>
+                    oder
+                    <kbd class="ml-2 kbd">↑</kbd>
+                    <kbd class="ml-2 kbd">←</kbd>
+                    <kbd class="ml-2 kbd">↓</kbd>
+                    <kbd class="mx-2 kbd">→</kbd>
+                    steuern.
+                </div>
+                <div class="flex items-center">
+                    <span>Um den Spieler springen zu lassen kannst du einfach die</span>
+                    <kbd class="kbd mx-2">Leertaste</kbd>
+                    <span>drücken und deine Waffe lädst du mit</span>
+                    <kbd class="kbd mx-2">R</kbd> nach.
+                </div>
+                <div class="flex items-center">
+                    <span>Ein experimenteller Vollbild-Modus lässt sich mit</span>
+                    <kbd class="kbd mx-2">F</kbd>
+                    <span>aktivieren und mit</span>
+                    <kbd class="kbd mx-2">P</kbd>
+                    <span>kannst du das Spiel pausieren.</span>
+                </div>
+                <div class="flex items-center mt-2">Deine Umgebung kannst du durch Bewegen der Maus erkunden und Schüsse
+                    feuerst du mit
+                    einem Klick ab.</div>
+            </div>
+        </div>
     </div>
     <div class="loading-screen h-screen w-screen flex flex-col justify-center items-center hidden">
         <progress class="progress w-80"></progress>

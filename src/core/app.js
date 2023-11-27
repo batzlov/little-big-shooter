@@ -116,7 +116,17 @@ export default class App {
         window.location.reload();
     }
 
-    showInstructions() {}
+    showInstructions() {
+        document
+            .querySelector(".game-instructions")
+            .classList.remove("fade-out");
+
+        setTimeout(() => {
+            document
+                .querySelector(".game-instructions")
+                .classList.add("fade-out");
+        }, 8 * 1000);
+    }
 
     showPauseMenu() {
         document.querySelector(".weapon-info").classList.toggle("hidden");

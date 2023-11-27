@@ -25,6 +25,9 @@ export default class Player {
         this.bulletsPerMagazine = 45;
         this.bulletsLeft = this.bulletsPerMagazine;
 
+        this.health = 100;
+        this.hitCost = 20;
+
         this.bullets = [];
         this.bulletBodys = [];
         this.bulletMeshes = [];
@@ -88,6 +91,13 @@ export default class Player {
                 bulletLeftInfo.innerHTML = this.bulletsLeft;
             }, 1800);
         });
+
+        this.body.addEventListener("collide", (event) => {
+            if (event.body.isBullet && event.body.shotByEnemy) {
+                console.log("hit by enemy bullet");
+                // play hit sound
+            }
+        });
     }
 
     initModel() {
@@ -121,7 +131,7 @@ export default class Player {
         const radius = 1.0;
         this.shape = new CANNON.Sphere(radius);
         this.body = new CANNON.Body({
-            mass: 5,
+            mass: 500,
             position: new CANNON.Vec3(0, 0, 0),
             shape: this.shape,
             material: new CANNON.Material("physics"),

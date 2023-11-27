@@ -4,7 +4,7 @@ import * as CANNON from "cannon-es";
 import Experience from "../core/experience";
 
 export default class Bullet {
-    constructor(position = { x: 0, y: 0, z: 0 }) {
+    constructor(position = { x: 0, y: 0, z: 0 }, shotByEnemy = false) {
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
@@ -12,6 +12,7 @@ export default class Bullet {
         this.position = position;
         this.physicsWorld = this.experience.physicsWorld;
         this.shotAt = new Date();
+        this.shotByEnemy = shotByEnemy;
         this.destroyed = false;
         this.destroyBulletAfter = 4000; // ms
 
@@ -43,6 +44,7 @@ export default class Bullet {
             angularDamping: 0.01,
         });
         this.body.isBullet = true;
+        this.body.shotByEnemy = this.shotByEnemy;
 
         this.physicsWorld.instance.addBody(this.body);
     }

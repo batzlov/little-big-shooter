@@ -29,7 +29,11 @@ export default class Enemy {
         this.health = 100;
         this.isDeath = false;
         this.maxVelocity = 8;
-        this.bullet = [];
+        this.bullets = [];
+
+        this.lastShotFired = new Date().getTime();
+        // 600 shots per minute
+        this.shotFrequency = 60000 / 200;
 
         this.initModel();
         this.initPhysics();
@@ -37,7 +41,7 @@ export default class Enemy {
         this.initAnimations();
 
         this.body.addEventListener("collide", (event) => {
-            if (event.body.isBullet) {
+            if (event.body.isBullet && !event.body.shotByEnemy) {
                 this.health -= 10;
 
                 if (this.health <= 0) {
@@ -75,20 +79,18 @@ export default class Enemy {
     }
 
     initPhysics() {
-        const size = new THREE.Vector3(1, 2.4, 1);
-        this.shape = new CANNON.Box(
-            new CANNON.Vec3(size.x / 2, size.y / 2, size.z / 2)
-        );
+        const radius = 1.0;
+        this.shape = new CANNON.Sphere(radius);
         this.body = new CANNON.Body({
-            mass: 0,
+            mass: 5,
             position: new CANNON.Vec3(
                 this.position.x,
-                this.position.y + size.y / 2,
+                this.position.y + 2.4 / 2,
                 this.position.z
             ),
             shape: this.shape,
-            linearDamping: 0.01,
-            angularDamping: 0.01,
+            material: new CANNON.Material("physics"),
+            linearDamping: 0.9,
         });
 
         this.physicsWorld.instance.addBody(this.body);
@@ -200,30 +202,27 @@ export default class Enemy {
 
     shoot() {
         // get shooting direction from model position and player body position
-        const shootDirection = new THREE.Vector3(
-            this.player.body.position.x - this.model.position.x,
-            this.player.body.position.y - this.model.position.y,
-            this.player.body.position.z - this.model.position.z
-        );
+        const shootDirection = new THREE.Vector3();
+        shootDirection
+            .subVectors(this.player.body.position, this.vehicle.position)
+            .normalize();
 
-        shootDirection.normalize();
-
-        const bullet = new Bullet();
+        const bullet = new Bullet({ x: 0, y: 0, z: 0 }, true);
 
         const x =
-            this.body.position.x +
+            this.vehicle.position.x +
             shootDirection.x *
                 (this.body.shapes[0].radius * 1.02 +
                     bullet.body.shapes[0].radius);
         const y =
-            this.body.position.y +
+            this.vehicle.position.y +
             shootDirection.y *
                 (this.body.shapes[0].radius * 1.02 +
                     bullet.body.shapes[0].radius) +
             (this.camera.instance.position.y - 0.2);
 
         const z =
-            this.body.position.z +
+            this.vehicle.position.z +
             shootDirection.z *
                 (this.body.shapes[0].radius * 1.02 +
                     bullet.body.shapes[0].radius);
@@ -231,7 +230,17 @@ export default class Enemy {
         const bulletPosition = new THREE.Vector3(x, y, z);
         bullet.updatePosition(bulletPosition);
 
-        this.bullet.push(bullet);
+        // handle rotation of bullet
+        bullet.model.lookAt(
+            new THREE.Vector3(
+                this.player.body.position.x,
+                this.player.body.position.y,
+                this.player.body.position.z
+            )
+        );
+        bullet.model.rotation.y += Math.PI;
+
+        this.bullets.push(bullet);
 
         const shootVelocity = 50;
         bullet.body.velocity.set(
@@ -252,7 +261,7 @@ export default class Enemy {
             )
         );
         const triggerActionDistance = 20;
-        const stopWalkingDistance = 10;
+        const stopWalkingDistance = 15;
 
         // TODO: needs some refactoring
         if (
@@ -262,16 +271,31 @@ export default class Enemy {
             this.animation.play("idleShoot");
         } else if (distanceToPlayer < stopWalkingDistance) {
             this.vehicle.velocity.set(
-                this.vehicle.velocity.x * 0.25,
+                this.vehicle.velocity.x * 0.1,
                 this.vehicle.velocity.y,
-                this.vehicle.velocity.z * 0.25
+                this.vehicle.velocity.z * 0.1
             );
+
+            const now = new Date().getTime();
+            console.log(now, this.lastShotFired);
+            if (now - this.lastShotFired > this.shotFrequency) {
+                this.shoot();
+                this.lastShotFired = now;
+            }
         } else if (
             distanceToPlayer > triggerActionDistance &&
             this.animation.actions.current !== this.animation.actions.run
         ) {
             this.animation.play("run");
             this.vehicle.maxSpeed = this.maxVelocity;
+        }
+
+        for (let i = 0; i < this.bullets.length; i++) {
+            if (this.bullets[i].destroyed) {
+                this.bullets.splice(i, 1);
+            } else {
+                this.bullets[i].update();
+            }
         }
 
         this.body.position.x = this.vehicle.position.x;

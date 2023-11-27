@@ -51,6 +51,14 @@ export default class SoundHandler {
         this.sound.play();
     }
 
+    playHurtSound() {
+        this.sound.stop();
+        this.sound.setBuffer(this.ressources.items.hurtSound);
+        this.sound.setLoop(false);
+        this.sound.setVolume(0.5);
+        this.sound.play();
+    }
+
     stop() {
         setTimeout(() => {
             this.sound.stop();
@@ -77,6 +85,20 @@ export default class SoundHandler {
             this.sound.isPlaying
         ) {
             return "reloadSound";
+        }
+
+        if (
+            this.sound.buffer === this.ressources.items.emptySound &&
+            this.sound.isPlaying
+        ) {
+            return "emptySound";
+        }
+
+        if (
+            this.sound.buffer === this.ressources.items.hurtSound &&
+            this.sound.isPlaying
+        ) {
+            return "hurtSound";
         }
 
         return null;

@@ -149,4 +149,9 @@ export default [
         type: "audio",
         path: "sounds/empty.mp3",
     },
+    {
+        name: "hurtSound",
+        type: "audio",
+        path: "sounds/hurt.mp3",
+    },
 ];

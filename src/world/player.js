@@ -94,8 +94,14 @@ export default class Player {
 
         this.body.addEventListener("collide", (event) => {
             if (event.body.isBullet && event.body.shotByEnemy) {
-                console.log("hit by enemy bullet");
-                // play hit sound
+                this.health -= this.hitCost;
+                this.experience.healthInfo.querySelector(
+                    "#health-left"
+                ).innerHTML = this.health;
+
+                if (this.soundHandler.currentlyPlaying() !== "hurtSound") {
+                    this.soundHandler.playHurtSound();
+                }
             }
         });
     }

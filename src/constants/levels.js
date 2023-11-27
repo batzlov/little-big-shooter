@@ -162,7 +162,7 @@ const level1 = {
             scale: { x: 1, y: 1, z: 1 },
         }
     ],
-    enemyCount: 5,
+    enemyCount: 2,
 };
 
 export { level1 };

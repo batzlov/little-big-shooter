@@ -44,7 +44,11 @@ Für die Umsetzung des Projekts wurden folgende Technologien verwendet:
 
 ## Bekannte Fehler
 
--   aktuell sind keine Fehler bekannt
+-   das Zielen/Schießen ist teilweiße etwas ungenau, dies tritt vor allem verstärkt auf, wenn sich der Spieler nah an den Gegnern befindet (vermutlich fehlerhafte Beschleunigung der Kugel auf der y-Achse)
+-   der Spieler kann nicht von hohen Gebäuden hinunter schießen
+-   die physikalischen Körper verschieben sich teilweiße bei Kollisionen
+-   Gegner erkennen teilweße Hindernisse nicht und laufen durch diese hindurch
+-   Spiel hängt sich teilweiße auf
 
 ## Assets
 

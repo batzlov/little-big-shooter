@@ -21,6 +21,7 @@ export default class Player {
         this.camera = this.experience.camera;
         this.debug = this.experience.debug;
 
+        this.crosshairPosition = new THREE.Vector3();
         this.bulletRotation = new THREE.Euler();
         this.bulletsPerMagazine = 45;
         this.bulletsLeft = this.bulletsPerMagazine;
@@ -272,7 +273,11 @@ export default class Player {
         }
 
         const bullet = new Bullet();
-        const shootDirection = this.getShootDirection();
+        // const shootDirection = this.getShootDirection();
+        const shootDirection = new THREE.Vector3();
+        shootDirection
+            .subVectors(this.crosshairPosition, this.body.position)
+            .normalize();
 
         const x =
             this.body.position.x +
@@ -298,12 +303,10 @@ export default class Player {
 
         this.bullets.push(bullet);
 
-        const shootVelocity = 50;
+        const shootVelocity = 200;
         bullet.body.velocity.set(
             shootDirection.x * shootVelocity,
-            // smaller values so the bullet flies more straight
-            // shootDirection.y * (shootVelocity / 4),
-            0,
+            -10, // FIXME: this is a hack to make the bullet fly more straight
             shootDirection.z * shootVelocity
         );
 

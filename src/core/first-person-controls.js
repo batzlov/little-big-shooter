@@ -239,6 +239,8 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
         this.crosshair.position.x = target.x;
         this.crosshair.position.y = target.y;
         this.crosshair.position.z = target.z;
+
+        this.player.crosshairPosition = this.crosshair.position;
     }
 
     // TODO: not the right place

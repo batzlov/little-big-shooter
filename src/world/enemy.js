@@ -50,6 +50,7 @@ export default class Enemy {
                     setTimeout(() => {
                         this.model.visible = false;
                         this.isDeath = true;
+                        this.soundHandler.backgroundSound.stop();
                     }, this.animation.actions.current._clip.duration * 1000 + 200);
 
                     return;

@@ -14,7 +14,7 @@ export default class Bullet {
         this.shotAt = new Date();
         this.shotByEnemy = shotByEnemy;
         this.destroyed = false;
-        this.destroyBulletAfter = 4000; // ms
+        this.destroyBulletAfter = 3000; // ms
 
         this.initModel();
         this.initPhysics();
@@ -32,7 +32,6 @@ export default class Bullet {
         const scale = 0.001;
         this.model.scale.set(scale, scale, scale);
 
-        // this.model.rotation.x = 0.5 * Math.PI;
         this.scene.add(this.model);
     }
 
@@ -66,7 +65,6 @@ export default class Bullet {
 
     update() {
         this.model.position.copy(this.body.position);
-        // this.model.quaternion.copy(this.body.quaternion);
 
         if (new Date() - this.shotAt > this.destroyBulletAfter) {
             this.destroy();

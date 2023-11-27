@@ -111,6 +111,7 @@ export default class Player {
                     clearInterval(this.regainHealthInterval);
                     this.experience.isPaused = true;
                     this.isDead = true;
+                    this.soundHandler.backgroundSound.stop();
                     this.experience.gameOver();
                 }
 

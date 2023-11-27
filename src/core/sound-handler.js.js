@@ -6,6 +6,7 @@ export default class SoundHandler {
     constructor() {
         this.listener = new THREE.AudioListener();
         this.sound = new THREE.Audio(this.listener);
+        this.backgroundSound = new THREE.Audio(this.listener);
 
         this.experience = new Experience();
         this.ressources = this.experience.resources;
@@ -21,6 +22,17 @@ export default class SoundHandler {
         this.sound.setLoop(false);
         this.sound.setVolume(0.5);
         this.sound.play();
+    }
+
+    playBackgroundSound(sound) {
+        if (this.experience.isPaused) {
+            return;
+        }
+
+        this.backgroundSound.setBuffer(sound);
+        this.backgroundSound.setLoop(true);
+        this.backgroundSound.setVolume(0.05);
+        this.backgroundSound.play();
     }
 
     playShootSound() {

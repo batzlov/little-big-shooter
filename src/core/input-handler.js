@@ -97,6 +97,7 @@ export default class InputHandler extends EventEmitter {
             case "KeyP":
                 this.lockPointer = false;
                 this.experience.isPaused = true;
+                this.experience.soundHandler.backgroundSound.stop();
                 break;
 
             case "Space":

@@ -28,7 +28,7 @@ export default class Enemy {
 
         this.health = 100;
         this.isDeath = false;
-        this.maxVelocity = 8;
+        this.maxVelocity = Math.floor(Math.random() * 3) + 6;
         this.bullets = [];
 
         this.lastShotFired = new Date().getTime();
@@ -273,6 +273,9 @@ export default class Enemy {
             this.animation.actions.current !== this.animation.actions.idleShoot
         ) {
             this.animation.play("idleShoot");
+            this.soundHandler.playBackgroundSound(
+                this.resources.items.burstSound
+            );
         } else if (distanceToPlayer < stopWalkingDistance) {
             this.vehicle.velocity.set(
                 this.vehicle.velocity.x * 0.1,
@@ -291,6 +294,7 @@ export default class Enemy {
         ) {
             this.animation.play("run");
             this.vehicle.maxSpeed = this.maxVelocity;
+            this.soundHandler.backgroundSound.stop();
         }
 
         for (let i = 0; i < this.bullets.length; i++) {

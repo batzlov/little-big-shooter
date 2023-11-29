@@ -12,6 +12,32 @@ export default class App {
         );
         this.hightlightedMenuButtonIndex = 0;
         this.handleMenuInputs();
+
+        this.initClickEvents();
+    }
+
+    initClickEvents() {
+        const menuBtns = document.querySelectorAll(".main-menu-btn");
+        menuBtns.forEach((btn) => {
+            btn.addEventListener("click", (event) => {
+                const action = event.target.getAttribute("data-action");
+
+                switch (action) {
+                    case "start":
+                        this.startGame();
+                        break;
+                    case "resume":
+                        this.resumeToGame();
+                        break;
+                    case "restart":
+                        this.restartGame();
+                        break;
+                    case "instructions":
+                        this.showInstructions();
+                        break;
+                }
+            });
+        });
     }
 
     handleMenuInputs() {

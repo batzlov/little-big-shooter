@@ -1,6 +1,6 @@
 # Little Big Shooter
 
-Little Big Shooter, ein Projekt von Robert Ackermann. Made with ♥ and ☕ in Erfurt.
+Little Big Shooter, ein Projekt von Robert Ackermann. Made with ♥ and ☕ in Leipzig.
 
 ## Allgemein
 

@@ -64,7 +64,6 @@ export default class Experience {
             this.player
         );
         this.world = new World();
-        this.scene.add(this.firstPersonControls.getObject());
         this.hideLoadingIndicator();
         this.showHealthInfo();
         this.showWeaponInfo();

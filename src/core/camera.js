@@ -17,30 +17,7 @@ export default class Camera {
         this.translation = new THREE.Vector3(0, 1.5, 15);
 
         if (this.debug.active) {
-            this.debugFolder = this.debug.ui.addFolder("CAMERA");
-            this.debugObject = {
-                translationX: this.translation.x,
-                translationY: this.translation.y,
-                translationZ: this.translation.z,
-            };
-            this.debug.ui
-                .add(this.debugObject, "translationX")
-                .min(-20)
-                .max(20)
-                .step(0.1)
-                .name("translationX");
-            this.debug.ui
-                .add(this.debugObject, "translationY")
-                .min(-20)
-                .max(20)
-                .step(0.1)
-                .name("translationY");
-            this.debug.ui
-                .add(this.debugObject, "translationZ")
-                .min(-20)
-                .max(20)
-                .step(0.1)
-                .name("translationZ");
+            this.initDebug();
         }
 
         this.initInstance();
@@ -57,6 +34,33 @@ export default class Camera {
         this.instance.position.y = 1.4;
 
         this.scene.add(this.instance);
+    }
+
+    initDebug() {
+        this.debugFolder = this.debug.ui.addFolder("CAMERA");
+        this.debugObject = {
+            translationX: this.translation.x,
+            translationY: this.translation.y,
+            translationZ: this.translation.z,
+        };
+        this.debug.ui
+            .add(this.debugObject, "translationX")
+            .min(-20)
+            .max(20)
+            .step(0.1)
+            .name("translationX");
+        this.debug.ui
+            .add(this.debugObject, "translationY")
+            .min(-20)
+            .max(20)
+            .step(0.1)
+            .name("translationY");
+        this.debug.ui
+            .add(this.debugObject, "translationZ")
+            .min(-20)
+            .max(20)
+            .step(0.1)
+            .name("translationZ");
     }
 
     resize() {

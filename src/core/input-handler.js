@@ -144,7 +144,6 @@ export default class InputHandler extends EventEmitter {
     }
 
     onMouseDown(event) {
-        // TODO: add event handling for mouse events
         if (event.buttons === 1) {
             this.emit("shoot");
         }
@@ -161,7 +160,6 @@ export default class InputHandler extends EventEmitter {
     }
 
     onMouseUp(event) {
-        // TODO: add event handling for mouse events
         delete this.mouseKeysPressed.left;
         delete this.mouseKeysPressed.leftPressedSince;
         delete this.mouseKeysPressed.leftPressedClock;

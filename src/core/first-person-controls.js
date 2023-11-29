@@ -38,7 +38,6 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
 
         this.initCrosshair();
         this.initPlayer();
-        // this.initWeapon();
         this.initHandleJumping();
 
         this.lockEvent = { type: "lock" };
@@ -49,6 +48,8 @@ export default class FirstPersonControls extends THREE.EventDispatcher {
             this.onPointerlockChange
         );
         document.addEventListener("pointerlockerror", this.onPointerlockError);
+
+        this.scene.add(this.yawObject);
     }
 
     async initCrosshair() {

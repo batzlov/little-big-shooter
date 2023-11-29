@@ -55,7 +55,6 @@ export default class World {
     }
 
     initSkybox() {
-        // TODO: replace with cube texture in the future
         this.scene.background = new THREE.Color(colors.skyBlue);
     }
 
